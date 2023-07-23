@@ -12,7 +12,8 @@ from Modulos.Modulo_ShowPrint import (
     Separator
 )
 from Modulos.Modulo_Language import (
-    get_text as Lang
+    get_text as Lang,
+    YesNo
 )
 import Modulos.Modulo_Notas as Notas
 
@@ -31,6 +32,7 @@ def Menu_Main():
             f'1. Crear una nueva nota.\n'
             f'2. Editar o ver una nota.\n'
             f'3. Eliminar una nota\n'
+            f'4. Cambiar directorio principal\n'
             f'0. {Lang("exit")}'
         )
         option = input(
@@ -46,7 +48,10 @@ def Menu_Main():
             Edit_Note()
 
         elif option == '3':
-            pass
+            Remove_Note()
+        
+        elif option == '4':
+            Change_Path_Note()
 
         elif option == '0':
             loop = False
@@ -70,10 +75,10 @@ def New_Note():
         pass
     
     # Crear el archivo necesario.
-    text_ready = Notas.New(path=path, text=text)
+    text_ready = Notas.New( text=text)
     if type(text_ready) is str:
         # Abrir nano en base al texto creado
-        os.system(f'nano {text_ready}')
+        os.system(f'nano "{text_ready}"')
 
     elif type(text_ready) is list:
         # El texto creado ya existe, y abrirlo con nano.
@@ -81,7 +86,7 @@ def New_Note():
             text_ready[0] + '\n'
             f'{Lang("continue_enter")}...'
         )
-        os.system(f'nano {text_ready[1]}')
+        os.system(f'nano "{text_ready[1]}"')
 
     else:
         # Fallo en la creación del archivo
@@ -96,12 +101,12 @@ def New_Note():
 def Edit_Note():
     # Parte visual
     CleanScreen()
-    Title('Ver notas')
+    Title('Editar o ver notas')
     text = f'1. Ultima nota\n'
 
     number = 1
     dict_text = {}
-    for note in Notas.get_list(path=path):
+    for note in Notas.get_list():
         number += 1
         dict_text.update({ str(number) : note })
     
@@ -120,13 +125,74 @@ def Edit_Note():
 
     elif option in dict_text:
         # Eleguir una nota, entre las notas existentes.
-        print(path)
-        print(dict_text[option])
-        edit = Notas.Edit(path=path, text=dict_text[option])
-        os.system(f'nano {edit}')
+        edit = Notas.Edit(text=dict_text[option])
+        os.system(f'nano "{edit}"')
 
     else:
         # No hacer nada, no existe esa opcion
+        pass
+
+
+def Remove_Note():
+    # Parte visual
+    CleanScreen()
+    Title('Eliminar notas')
+
+    number = 0
+    dict_text = {}
+    for note in Notas.get_list():
+        number += 1
+        dict_text.update({ str(number) : note })
+
+    text = ''
+    for key in dict_text.keys():
+        text += f'{key}. {dict_text[key]}\n'
+
+    option = input (
+        text + '\n'
+        f'{Lang("set_option")}: '
+    )
+    
+    # Opcion elegida
+    if option in dict_text:
+        # Eleguir una nota, entre las notas existentes.
+        if Notas.Remove(text=dict_text[option]) == True:
+            # Se pudo remover
+            print('Removido con exito')
+        else:
+            # No se pudo remover
+            print('No se pudo remover')
+            
+        input(f'{Lang("continue_enter")}...')
+
+    else:
+        # No hacer nada, no existe esa opcion
+        pass
+
+
+def Change_Path_Note():
+    CleanScreen()
+    Title('Cambiar directorio principal')
+    print(
+        'Directorio Actual:\n' +
+        Notas.get_path()
+    )
+    option = Continue(
+        'Cambiar ruta'
+    )
+    
+    if option == YesNo('yes'):
+        new_path = Notas.Change_Path(
+            path=input('Directorio: ')
+        )
+        if new_path == True:
+            print('Directorio cambiado con exito')
+        elif new_path == False:
+            print('El directorio no se pudo cambiar')
+
+        input(f'{Lang("continue_enter")}...')
+
+    elif option == YesNo('no'):
         pass
 
 

@@ -1,1 +1,2 @@
-title=texto
+#    texto    #
+Este es el text que necesitamos, saludos
