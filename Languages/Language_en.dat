@@ -22,6 +22,10 @@ dir=Directory
 exclude_dirs=Exclude directories
 dir_main=Main directory
 error_dir=Wrong directory
+change_main_dir=Change home directory
+dir_current=Current directory
+dir_change_good=Directory changed successfully
+dir_change_not_good=The directory could not be changed
 
 # Archive or file type text
 set_arch=Set the file
@@ -40,6 +44,7 @@ fin_install=Installation completed
 bye=See you soon
 
 # Error type text
+error_create_file=File creation failed
 error_admin=You need administrator permissions
 error_parameter=Some parameter is wrong
 
@@ -130,3 +135,16 @@ paw=Paw
 shelf=Shelf
 shelf_square=Square shelf
 rectangular_wall=Rectangular wall
+
+# Notes
+last_note=Last note
+new_note=Create a new note
+edit_note=Edit or view a note
+remove_note=Delete a note
+
+# Remove type text
+remove_good=Removed succesfully
+remove_not_good=Could not remove file
+
+# Files
+this_file_exists=That file already exists

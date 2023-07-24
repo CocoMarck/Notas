@@ -20,6 +20,10 @@ dir=Directorio
 exclude_dirs=Excluir directorios
 dir_main=Directorio principal
 error_dir=Directorio incorrecto
+change_main_dir=Cambiar directorio principal
+dir_current=Directorio actual
+dir_change_good=Directorio cambiado con exito
+dir_change_not_good=El directorio no se pudo cambiar
 
 # Archivos
 set_arch=Establesca el archivo
@@ -38,6 +42,7 @@ fin_install=Instalación completada
 bye=Hasta la proxima
 
 # Errores
+error_create_file=Fallo en la creación del archivo
 error_admin=Necesitas permisos de administrador
 error_parameter=Algún parámetro es incorrecto
 
@@ -127,3 +132,16 @@ paw=Pata
 shelf=Repisa
 shelf_square=Repisa cuadrada
 rectangular_wall=Pared rectangular
+
+# Notas
+last_note=Ultima nota
+new_note=Crear una nueva nota
+edit_note=Editar o ver una nota
+remove_note=Eliminar una nota
+
+# Remove type text
+remove_good=Removido con exito
+remove_not_good=No se pudo remover el archivo
+
+# Files
+this_file_exists=Ese archivo ya existe.

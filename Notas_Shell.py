@@ -29,10 +29,10 @@ def Menu_Main():
         CleanScreen()
         Title('Notas')
         text = (
-            f'1. Crear una nueva nota.\n'
-            f'2. Editar o ver una nota.\n'
-            f'3. Eliminar una nota\n'
-            f'4. Cambiar directorio principal\n'
+            f'1. {Lang("new_note")}.\n'
+            f'2. {Lang("edit_note")}.\n'
+            f'3. {Lang("remove_note")}\n'
+            f'4. {Lang("change_main_dir")}\n'
             f'0. {Lang("exit")}'
         )
         option = input(
@@ -63,7 +63,7 @@ def Menu_Main():
 def New_Note():
     # Parte visual
     CleanScreen()
-    Title(f'Nueva Nota')
+    Title(Lang('new_note'))
     text = input(f'{Lang("name")}: ')
     
     # Texto de input
@@ -83,7 +83,7 @@ def New_Note():
     elif type(text_ready) is list:
         # El texto creado ya existe, y abrirlo con nano.
         input(
-            text_ready[0] + '\n'
+            Lang('this_file_exists') + '\n'
             f'{Lang("continue_enter")}...'
         )
         os.system(f'nano "{text_ready[1]}"')
@@ -93,7 +93,7 @@ def New_Note():
         # O El input tiene caracteres erroneos
         # Hay un Error
         input(
-            f'Error - Fallo en la creación del archivo\n'
+            f'ERROR - {Lang("error_create_file")}\n'
             f'{Lang("continue_enter")}...'
         )
 
@@ -101,8 +101,8 @@ def New_Note():
 def Edit_Note():
     # Parte visual
     CleanScreen()
-    Title('Editar o ver notas')
-    text = f'1. Ultima nota\n'
+    Title(Lang('edit_note'))
+    text = f'1. {Lang("last_note")}\n'
 
     number = 1
     dict_text = {}
@@ -136,7 +136,7 @@ def Edit_Note():
 def Remove_Note():
     # Parte visual
     CleanScreen()
-    Title('Eliminar notas')
+    Title(Lang('remove_note'))
 
     number = 0
     dict_text = {}
@@ -158,10 +158,10 @@ def Remove_Note():
         # Eleguir una nota, entre las notas existentes.
         if Notas.Remove(text=dict_text[option]) == True:
             # Se pudo remover
-            print('Removido con exito')
+            print(Lang('remove_good'))
         else:
             # No se pudo remover
-            print('No se pudo remover')
+            print(Lang('remove_not_good'))
             
         input(f'{Lang("continue_enter")}...')
 
@@ -172,23 +172,23 @@ def Remove_Note():
 
 def Change_Path_Note():
     CleanScreen()
-    Title('Cambiar directorio principal')
+    Title(Lang("dir_main"))
     print(
-        'Directorio Actual:\n' +
-        Notas.get_path()
+        f'{Lang("dir_current")}:\n' +
+        Notas.get_path() + '\n'
     )
     option = Continue(
-        'Cambiar ruta'
+        Lang("change_main_dir")
     )
     
     if option == YesNo('yes'):
         new_path = Notas.Change_Path(
-            path=input('Directorio: ')
+            path=input(f'{Lang("dir")}: ')
         )
         if new_path == True:
-            print('Directorio cambiado con exito')
+            print( Lang('dir_change_good') )
         elif new_path == False:
-            print('El directorio no se pudo cambiar')
+            print( Lang('dir_change_not_good') )
 
         input(f'{Lang("continue_enter")}...')
 

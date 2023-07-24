@@ -3,9 +3,6 @@ from Modulos.Modulo_Util import(
     Files_List,
     Text_Read
 )
-from Modulos.Modulo_Language import(
-    get_lang as Lang
-)
 from Modulos.Modulo_ShowPrint import(
     Title
 )
@@ -46,15 +43,17 @@ def get_list(path=note_path):
 
 def New(path=note_path, text='texto'):
     '''Crear una nueva nota'''
+    '''Si logra crear el archivo, devolvera un str del nombre del archivo'''
+    '''Si ya existe el archivo, devolvera una lista, con un true y el nombre del archivo'''
+    '''Si falla en la cración der achivo devolcera un boleano tipo False'''
     # Archivo a crear
     file_ready = f'{path}Note_{text}.txt'
     
     # Verificar que no exista
     if pathlib(file_ready).exists():
-        # Si existe no hace nada
+        # Si existe, retorna una lista
         return [
-            ('Este texto ya existe'),
-            file_ready
+            True, file_ready
         ]
     else:
         try:
@@ -66,7 +65,7 @@ def New(path=note_path, text='texto'):
             return file_ready
         except:
             # Si falla en la creación del archivo, retorna un none
-            return None
+            return False
 
 
 def Edit(path=note_path, text=''):
