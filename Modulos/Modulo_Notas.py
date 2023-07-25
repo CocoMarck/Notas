@@ -41,6 +41,19 @@ def get_list(path=note_path):
     return list_ready
 
 
+def get_last_note():
+    '''Devuelve el la ultima nota creada'''
+    last_note_file = Text_Read(
+        'data/last_note.dat',
+        'ModeText'
+    )
+    last_note = f"{note_path}Note_{last_note_file}.txt"
+    if pathlib(last_note).exists():
+        return last_note
+    else:
+        return None
+
+
 def New(path=note_path, text='texto'):
     '''Crear una nueva nota'''
     '''Si logra crear el archivo, devolvera un str del nombre del archivo'''
@@ -62,6 +75,11 @@ def New(path=note_path, text='texto'):
                 text_final.write(
                     f'{Title(text=text, print_mode=False)}'
                 )
+
+            # Establece el archivo creado en last_note.dat
+            with open('data/last_note.dat', 'w') as last_note:
+                last_note.write(text)
+
             return file_ready
         except:
             # Si falla en la creación del archivo, retorna un none

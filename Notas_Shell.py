@@ -121,7 +121,14 @@ def Edit_Note():
     # Opcion elegida
     if option == '1':
         # Ultimo texto creado
-        pass
+        edit = Notas.get_last_note()
+        if type(edit) is str:
+            os.system(f'nano "{edit}"')
+        elif edit == None:
+            input(
+                f'{Lang("no_note")}.\n'
+                f'{Lang("continue_enter")}...'
+            )
 
     elif option in dict_text:
         # Eleguir una nota, entre las notas existentes.

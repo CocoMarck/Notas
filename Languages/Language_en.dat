@@ -141,6 +141,7 @@ last_note=Last note
 new_note=Create a new note
 edit_note=Edit or view a note
 remove_note=Delete a note
+no_note=No note detected
 
 # Remove type text
 remove_good=Removed succesfully

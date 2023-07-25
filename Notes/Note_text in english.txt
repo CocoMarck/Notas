@@ -1,0 +1,2 @@
+#    text in english    #
+This is a note writed in English Language, for test this program. Bye
