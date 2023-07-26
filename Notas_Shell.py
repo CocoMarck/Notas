@@ -1,9 +1,10 @@
 import os
-from pathlib import Path as pathlib
 
-from Modulos.Modulo_Util import (
-    System,
-    CleanScreen,
+from Modulos.Modulo_System import (
+    get_system,
+    CleanScreen
+)
+from Modulos.Modulo_Text import (
     Text_Read
 )
 from Modulos.Modulo_ShowPrint import (
