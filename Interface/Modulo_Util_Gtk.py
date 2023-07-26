@@ -5,11 +5,15 @@ from gi.repository import Gtk, GLib
 
 import threading
 
-from Modulos import Modulo_Util as Util
+from Modulos.Modulo_System import(
+    Command_Run
+)
+from Modulos.Modulo_ShowPrint import(
+    Separator
+)
 from Modulos.Modulo_Language import Language
 
 
-sys = Util.System()
 lang = Language()
 
 
@@ -119,10 +123,10 @@ class Dialog_Command_Run(Gtk.Dialog):
         else:
             with open(self.cfg_file, 'a') as file_cfg:
                     file_cfg.write(
-                        self.cfg + f'\n#{Util.Separator(see=False)}\n'
+                        self.cfg + f'\n#{Separator(print_mode=False)}\n'
                     )
                 
-        Util.Command_Run(self.cfg)
+        Command_Run(self.cfg)
 
 
 class Dialog_Wait(Gtk.Dialog):
