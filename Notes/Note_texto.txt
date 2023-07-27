@@ -1,2 +1,5 @@
 #    texto    #
-Este es el texto que necesitamos, saludos
+Este es el texto que necesitamos, saludos.
+
+Y esta es otra linea necesaria, esta escrita en un Text View de Gtk.
+La verdad es que funciana bien, pero no siempre puede ser así, Saludos.

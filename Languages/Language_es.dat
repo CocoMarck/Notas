@@ -139,6 +139,7 @@ new_note=Crear una nueva nota
 edit_note=Editar o ver una nota
 remove_note=Eliminar una nota
 no_note=No se detectó ninguna nota
+save_note=Guardar nota
 
 # Remove type text
 remove_good=Removido con exito
