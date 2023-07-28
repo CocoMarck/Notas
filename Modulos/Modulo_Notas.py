@@ -24,8 +24,9 @@ note_path = Path(path=note_path)
 
 
 def get_path():
+    '''Obtener el path principal actual donde se guardan las notas'''
     if note_path.startswith(''):
-        return f'{os.getcwd()}/{note_path}'
+        return f'{Path(path=os.getcwd())}{note_path}'
     else:
         return note_path
 
@@ -99,8 +100,14 @@ def Edit(path=note_path, text=''):
     )
     
     if text in list_note:
+        # El archivo note_path existe en la list_note
+        # Establece el la nota en last_note.dat
+        with open('data/last_note.dat', 'w') as last_note:
+            last_note.write(text)
+
         return f'{path}Note_{text}.txt'
     else:
+        # El archivo note_path no existe en la list_note
         return None
 
 

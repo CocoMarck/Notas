@@ -218,15 +218,15 @@ class Dialog_edit_note(Gtk.Dialog):
             dialog.destroy()
         elif edit == None:
             # El texto no existe y no se hara nada, mas que un mensaje indicador.
-            dialog_info = Gtk.MessageDialog(
+            dialog_error = Gtk.MessageDialog(
                 transient_for=self,
                 flags=0,
-                message_type=Gtk.MessageType.INFO,
-                buttons=Gtk.ButtonsType.OK,
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.CANCEL,
                 text=Lang('no_note')
             )
-            dialog_info.run()
-            dialog_info.destroy()
+            dialog_error.run()
+            dialog_error.destroy()
     
     def evt_edit_a_note(self, button):
         # Editar la nota elegida, basado en el texto/label del button precionado.
@@ -303,15 +303,15 @@ class Dialog_remove_note(Gtk.Dialog):
                 dialog_info.destroy()
             else:
                 # No se pudo remover
-                dialog_info = Gtk.MessageDialog(
+                dialog_error = Gtk.MessageDialog(
                     transient_for=self,
                     flags=0,
-                    message_type=Gtk.MessageType.INFO,
-                    buttons=Gtk.ButtonsType.OK,
+                    message_type=Gtk.MessageType.ERROR,
+                    buttons=Gtk.ButtonsType.CANCEL,
                     text=Lang('remove_not_good')
                 )
-                dialog_info.run()
-                dialog_info.destroy()
+                dialog_error.run()
+                dialog_error.destroy()
 
         elif response == Gtk.ResponseType.NO:
             # Se eligio no eliminar la nota
@@ -406,15 +406,15 @@ class Dialog_change_main_dir(Gtk.Dialog):
             win.destroy()
         elif new_path == False:
             # No se pudo cambiar la ruta principal de las notas
-            dialog_info = Gtk.MessageDialog(
+            dialog_error = Gtk.MessageDialog(
                 transient_for=self,
                 flags=0,
-                message_type=Gtk.MessageType.INFO,
-                buttons=Gtk.ButtonsType.OK,
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.CANCEL,
                 text=Lang('dir_change_not_good')
             )
-            dialog_info.run()
-            dialog_info.destroy()
+            dialog_error.run()
+            dialog_error.destroy()
         self.destroy()
 
 
