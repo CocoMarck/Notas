@@ -19,8 +19,8 @@ from Modulos.Modulo_Language import (
 import Modulos.Modulo_Notas as Notas
 
 
-path = 'Notes/'
-path_main = os.getcwd()
+#path = 'Notes/'
+#path_main = os.getcwd()
 
 
 def Menu_Main():

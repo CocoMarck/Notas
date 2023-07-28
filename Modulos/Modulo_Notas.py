@@ -2,6 +2,7 @@ from Modulos.Modulo_System import(
     get_system
 )
 from Modulos.Modulo_Files import(
+    Path,
     Files_List
 )
 from Modulos.Modulo_Text import(
@@ -19,6 +20,7 @@ note_path = Text_Read(
     'data/note_path.dat',
     'ModeText'
 )
+note_path = Path(path=note_path)
 
 
 def get_path():

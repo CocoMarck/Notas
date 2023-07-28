@@ -1,10 +1,39 @@
 import os
 import shutil
 from pathlib import Path as pathlib
-from distutils.dir_util import copy_tree
 from glob import glob
-
 from .Modulo_System import get_system
+
+
+def Path(path='', system=get_system()):
+    import subprocess # Por path
+    '''Comprobar o hacer que una carpeta termine con su slash correspondiente.'''
+    path_fin = ''
+    if system == 'linux':
+        path_fin = '/'
+
+    elif system == 'win':
+        path_fin = '\\'
+
+    else: path = ''
+
+    if path == '':
+        if system == 'win':
+            path = (os.path.join(os.path.join(os.environ['USERPROFILE']),
+                   'Desktop'))
+        elif system == 'linux': 
+            path = subprocess.check_output(
+                'echo $HOME', shell=True, text=True
+            ).replace('\n', '')
+        else: pass
+
+    try: path_laststr = path[-1]
+    except: path_laststr = path_fin
+    if path_laststr == path_fin: pass
+    else:        
+        path = path + path_fin
+
+    return path
 
 
 def Files_List(files='', path='', remove_path=False):
@@ -34,6 +63,7 @@ def Files_List(files='', path='', remove_path=False):
 
 
 def Files_Copy(source='', destiny=''):
+    from distutils.dir_util import copy_tree # Por files copy
     '''Copia archivos a una rota especificada'''
     
     state = 'Copy Ready'

@@ -40,6 +40,8 @@ class Dialog_TextView(Gtk.Dialog):
         
         # Verificar si texto, es un archivo
         if isfile(text):
+            # Si lo es, el titulo sera el arhcivo.
+            self.set_title(text)
             # Si lo es, entonces se leera
             text = Text_Read(
                 file_and_path=text, 
