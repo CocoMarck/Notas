@@ -8,12 +8,14 @@ import os
 
 import sys
 from pathlib import Path
+from functools import partial
 from PyQt6.QtWidgets import(
     QApplication,
     QWidget,
     QDialog,
     QFileDialog,
     QMessageBox,
+    QScrollArea,
     QLineEdit,
     QLabel,
     QPushButton,
@@ -21,6 +23,7 @@ from PyQt6.QtWidgets import(
     QHBoxLayout
 )
 from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt
 
 
 class Window_Main(QWidget):
@@ -62,10 +65,10 @@ class Window_Main(QWidget):
         Dialog_edit_note(self).exec()
 
     def evt_remove_note(self):
-        pass
+        Dialog_remove_note(self).exec()
 
     def evt_change_main_dir(self):
-        pass
+        Dialog_change_main_dir(self).exec()
 
 
 class Dialog_new_note(QDialog):
@@ -124,7 +127,11 @@ class Dialog_new_note(QDialog):
         )
         if type(note_save_or_not) is str:
             # Abrir archivo con un editor de texto
-            os.system(f'notepad "{note_save_or_not}"')
+            Dialog_TextEdit(
+                self,
+                text=note_save_or_not,
+                edit=True
+            ).exec()
 
         elif type(note_save_or_not) is list:
             # El texto creado ya existe, y abrirlo con un editor de texto
@@ -136,7 +143,10 @@ class Dialog_new_note(QDialog):
             message_box.exec()
 
             # Abrir el texto con un editor de texto
-            os.system(f'notepad {note_save_or_not[1]}')
+            Dialog_TextEdit(
+                text=note_save_or_not[1],
+                edit=True
+            ).exec()
 
         else:
             # Fallo en la creación del archivo
@@ -154,7 +164,155 @@ class Dialog_edit_note(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle( Lang('edit_note') )
-        self.resize(512, 308)
+        self.resize(256, 256)
+
+        # Contenedor Pirncipal
+        vbox_main = QVBoxLayout()
+        self.setLayout(vbox_main)
+        
+        # Secciones Verticales - Botones
+        # Scroll
+        scroll_area = QScrollArea()
+        scroll_area.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
+        vbox_main.addWidget(scroll_area)
+        
+        # Scroll - Contenedor de Widgets
+        widget_buttons = QWidget()
+        
+        # Scroll - Layout
+        vbox = QVBoxLayout()
+        widget_buttons.setLayout(vbox)
+        
+        # Scroll - Layout - Botones en orden vertical
+        button_last_note = QPushButton( Lang('last_note') )
+        button_last_note.clicked.connect(self.evt_edit_last_note)
+        vbox.addWidget(button_last_note)
+        
+        for note in Notas.get_list():
+            button = QPushButton( note )
+            button.clicked.connect(
+                partial(self.evt_edit_a_note, button=button)
+            )
+            vbox.addWidget(button)
+        
+        # Scroll - Agregar el Contenedor
+        scroll_area.setWidget(widget_buttons)
+
+        # Fin, Mostrar ventanta y sus widgets agregados
+        self.show()
+    
+    def evt_edit_last_note(self):
+        # Ultimo texto creado
+        edit = Notas.get_last_note()
+        if type(edit) is str:
+            # El texto existe y se editara con un TextView
+            Dialog_TextEdit(
+                self,
+                text=edit,
+                edit=True
+            ).exec()
+        elif edit == None:
+            # Mostrar mensaje de info de que no existe.
+            QMessageBox.critical(
+                self,
+                'ERROR', # Titulo   
+                Lang('no_note') # Texto de ventana
+            )
+    
+    def evt_edit_a_note(self, button):
+        Dialog_TextEdit(
+            self,
+            text=Notas.Edit( text=button.text() ),
+            edit=True
+        ).exec()
+
+
+class Dialog_remove_note(QDialog):
+    def __init__(
+        self, parent=None
+    ):
+        super().__init__(parent)
+
+        self.setWindowTitle( Lang('remove_note') )
+        self.resize(256, 256)
+
+        # Contenedor Pirncipal
+        vbox_main = QVBoxLayout()
+        self.setLayout(vbox_main)
+        
+        # Secciones Verticales - Botones
+        # Scroll
+        scroll_area = QScrollArea()
+        scroll_area.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
+        vbox_main.addWidget(scroll_area)
+        
+        # Scroll - Contenedor de Widgets
+        widget_buttons = QWidget()
+        
+        # Scroll - Layout
+        vbox = QVBoxLayout()
+        widget_buttons.setLayout(vbox)
+        
+        # Scroll - Layout - Botones en orden vertical
+        for note in Notas.get_list():
+            button = QPushButton( note )
+            button.clicked.connect(
+                partial(self.evt_remove_a_note, button=button)
+            )
+            vbox.addWidget(button)
+        
+        # Scroll - Agregar el Contenedor
+        scroll_area.setWidget(widget_buttons)
+
+        # Fin, Mostrar ventanta y sus widgets agregados
+        self.show()
+    
+    def evt_remove_a_note(self, button):
+        # Verificar remover o no la nota
+        message_box_question = QMessageBox.question(
+            self,
+            Lang('remove_note'), # Titulo
+            Lang('remove_note'), # Texto
+            QMessageBox.StandardButton.Yes |
+            QMessageBox.StandardButton.No
+        )
+        
+        if message_box_question == QMessageBox.StandardButton.Yes:
+            # Eliminar una nota
+            if Notas.Remove( text=button.text() ) == True:
+                # Se pudo remover
+                QMessageBox.information(
+                    self,
+                    Lang('remove_note'),
+                    Lang('remove_good'),
+                    QMessageBox.StandardButton.Ok
+                )
+            else:
+                # No se pudo remover
+                QMessageBox.critical(
+                    self,
+                    Lang('remove_note'),
+                    Lang('remove_not_good')
+                )
+        else:
+            # Se eligio no eliminar la nota
+            pass
+        
+        self.close()
+
+
+class Dialog_change_main_dir(QDialog):
+    def __init__(
+        self, parent=None
+    ):
+        super().__init__(parent)
+
+        self.setWindowTitle( Lang('dir_main') )
+        self.resize(512, 128)
 
         # Contenedor Pirncipal
         vbox_main = QVBoxLayout()
