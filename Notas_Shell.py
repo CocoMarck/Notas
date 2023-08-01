@@ -79,7 +79,10 @@ def New_Note():
     text_ready = Notas.New( text=text)
     if type(text_ready) is str:
         # Abrir nano en base al texto creado
-        os.system(f'nano "{text_ready}"')
+        if get_system() == 'linux':
+            os.system(f'nano "{text_ready}"')
+        elif get_system() == 'win':
+            os.system(f'notepad "{text_ready}"')
 
     elif type(text_ready) is list:
         # El texto creado ya existe, y abrirlo con nano.
@@ -87,7 +90,10 @@ def New_Note():
             Lang('this_file_exists') + '\n'
             f'{Lang("continue_enter")}...'
         )
-        os.system(f'nano "{text_ready[1]}"')
+        if get_system() == 'linux':
+            os.system(f'nano "{text_ready[1]}"')
+        elif get_system() == 'win':
+            os.system(f'notepad "{text_ready[1]}"')
 
     else:
         # Fallo en la creación del archivo
@@ -124,7 +130,10 @@ def Edit_Note():
         # Ultimo texto creado
         edit = Notas.get_last_note()
         if type(edit) is str:
-            os.system(f'nano "{edit}"')
+            if get_system() == 'linux':
+                os.system(f'nano "{edit}"')
+            elif get_system() == 'win':
+                os.system(f'notepad "{edit}"')
         elif edit == None:
             input(
                 f'{Lang("no_note")}.\n'
@@ -134,7 +143,10 @@ def Edit_Note():
     elif option in dict_text:
         # Eleguir una nota, entre las notas existentes.
         edit = Notas.Edit(text=dict_text[option])
-        os.system(f'nano "{edit}"')
+        if get_system() == 'linux':
+            os.system(f'nano "{edit}"')
+        elif get_system() == 'win':
+            os.system(f'notepad "{edit}"')
 
     else:
         # No hacer nada, no existe esa opcion
