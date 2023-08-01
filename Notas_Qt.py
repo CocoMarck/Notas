@@ -317,9 +317,78 @@ class Dialog_change_main_dir(QDialog):
         # Contenedor Pirncipal
         vbox_main = QVBoxLayout()
         self.setLayout(vbox_main)
+        
+        # Sección Vertical - Directorio principal
+        hbox = QHBoxLayout()
+        vbox_main.addLayout(hbox)
+        
+        self.entry_main_dir = QLineEdit(
+            self,
+            maxLength=90,
+            placeholderText=Lang('dir'),
+            clearButtonEnabled=True
+        )
+        self.entry_main_dir.setText( Notas.get_path() )
+        hbox.addWidget(self.entry_main_dir)
+        
+        button_set_dir = QPushButton(
+            Lang('set_dir')
+        )
+        button_set_dir.clicked.connect(self.evt_set_dir)
+        hbox.addWidget(button_set_dir)
+        
+        # Seccion Vertical - Separador
+        vbox_main.addStretch()
+        
+        # Seccion Vertical final, boton para cambiar ruta
+        button_change_main_dir = QPushButton( Lang('change_main_dir') )
+        button_change_main_dir.clicked.connect(self.evt_change_main_dir)
+        vbox_main.addWidget(button_change_main_dir)
 
         # Fin, Mostrar ventanta y sus widgets agregados
         self.show()
+    
+    def evt_set_dir(self):
+        # Establecer ruta en el self.entry_main_dir
+        # por medio de un FileChooserDialog
+        dialog_set_dir = QFileDialog.getExistingDirectory(
+            self,
+            Lang('set_dir'),
+            self.entry_main_dir.text()
+        )
+        if dialog_set_dir:
+            # Cambiar ruta
+            self.entry_main_dir.setText(
+                str(Path( dialog_set_dir ))
+            )
+        else:
+            # No cambiar ruta
+            pass
+    
+    def evt_change_main_dir(self):
+        # Cambiar ruta principal donde se guardan las notas
+        new_path = Notas.Change_Path(
+            path=self.entry_main_dir.text()
+        )
+        if new_path == True:
+            # Se pudo cambiar la ruta principal de las notas
+            # Mostrar mensaje informativo, y cerrar todo el programa
+            QMessageBox.information(
+                self,
+                Lang('change_main_dir'),
+                Lang('dir_change_good'),
+                QMessageBox.StandardButton.Ok
+            )
+            window.close()
+        elif new_path == False:
+            # No se pudo cambiar la ruta principal de las notas.
+            # Mostrar mensaje de error y cerrar unicamente el dialogo
+            QMessageBox.critical(
+                self,
+                Lang('change_main_dir'),
+                Lang('dir_change_not_good'),
+            )
+            self.close()
 
 
 if __name__ == '__main__':

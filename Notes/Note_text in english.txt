@@ -1,2 +1,4 @@
-#    text in english    #
+# text in english #
 This is a note writed in English Language, for test this program. Bye
+
+This is a text writed in a Text Edit by Qt, or more specific PyQt6.

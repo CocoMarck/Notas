@@ -25,10 +25,11 @@ note_path = Path(path=note_path)
 
 def get_path():
     '''Obtener el path principal actual donde se guardan las notas'''
-    if note_path.startswith(''):
-        return f'{Path(path=os.getcwd())}{note_path}'
-    else:
-        return note_path
+    return note_path
+    #if note_path.startswith(''):
+    #    return f'{Path(path=os.getcwd())}{note_path}'
+    #else:
+    #    return note_path
 
 
 def get_list(path=note_path):

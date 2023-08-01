@@ -1,5 +1,4 @@
-#    texto    #
-Este es el texto que necesitamos, saludos.
+# texto #
+Este es un texto basico, escrito en un Text Edit de Qt.
 
-Y esta es otra linea necesaria, esta escrita en un Text View de Gtk.
-La verdad es que funciana bien, pero no siempre puede ser así, Saludos.
+Linea escrita en un Text View hecho en Gtk.
