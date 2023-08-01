@@ -1,4 +1,4 @@
-# texto #
+#    texto    #
 Este es un texto basico, escrito en un Text Edit de Qt.
 
 Linea escrita en un Text View hecho en Gtk.
