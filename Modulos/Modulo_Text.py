@@ -3,14 +3,15 @@ from pathlib import Path as pathlib
 
 def Text_Read(
         file_and_path='',
-        option='ModeList'
+        option='ModeList',
+        encoding="utf-8"
     ):
     '''Lee un archivo de texto y devuelve la información en una lista, variable o diccionario.'''
     
     #text_final = None
     
     if pathlib(file_and_path).exists():
-        with open(file_and_path, 'r') as text:
+        with open(file_and_path, 'r', encoding=encoding) as text:
             text_read = text.read()
         
         if (
