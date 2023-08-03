@@ -31,7 +31,7 @@ class Window_Main(QWidget):
         super().__init__(*args, **kwargs)
 
         self.setWindowTitle('Notas')
-        #self.setWindowIcon(QIcon('icono'))
+        self.setWindowIcon(QIcon('Icons/Icono-Notas.png'))
         self.resize(256, -1)
 
         # Contenedor principal
@@ -59,16 +59,24 @@ class Window_Main(QWidget):
         self.show()
 
     def evt_new_note(self):
+        self.hide()
         Dialog_new_note(self).exec()
+        self.show()
 
     def evt_edit_note(self):
+        self.hide()
         Dialog_edit_note(self).exec()
+        self.show()
 
     def evt_remove_note(self):
+        self.hide()
         Dialog_remove_note(self).exec()
+        self.show()
 
     def evt_change_main_dir(self):
+        self.hide()
         Dialog_change_main_dir(self).exec()
+        self.show()
 
 
 class Dialog_new_note(QDialog):
@@ -127,11 +135,13 @@ class Dialog_new_note(QDialog):
         )
         if type(note_save_or_not) is str:
             # Abrir archivo con un editor de texto
+            self.hide()
             Dialog_TextEdit(
                 self,
                 text=note_save_or_not,
                 edit=True
             ).exec()
+            self.show()
 
         elif type(note_save_or_not) is list:
             # El texto creado ya existe, y abrirlo con un editor de texto
@@ -143,10 +153,13 @@ class Dialog_new_note(QDialog):
             message_box.exec()
 
             # Abrir el texto con un editor de texto
+            self.hide()
             Dialog_TextEdit(
+                self,
                 text=note_save_or_not[1],
                 edit=True
             ).exec()
+            self.show()
 
         else:
             # Fallo en la creación del archivo

@@ -16,6 +16,7 @@ class Window_Main(Gtk.Window):
         super().__init__( title='Notas' )
         self.set_resizable(True)
         self.set_default_size(256, -1)
+        self.set_icon_from_file('Icons/Icono-Notas.png')
         
         # Contenedor Principal
         vbox_main = Gtk.Box(
@@ -25,19 +26,19 @@ class Window_Main(Gtk.Window):
         # Seccion Vertical - Botones
         button_new_note = Gtk.Button(label=Lang('new_note'))
         button_new_note.connect('clicked', self.evt_new_note)
-        vbox_main.pack_start(button_new_note, False, True, 0)
+        vbox_main.pack_start(button_new_note, True, True, 0)
         
         button_edit_note = Gtk.Button(label=Lang('edit_note'))
         button_edit_note.connect('clicked', self.evt_edit_note)
-        vbox_main.pack_start(button_edit_note, False, True, 0)
+        vbox_main.pack_start(button_edit_note, True, True, 0)
         
         button_remove_note = Gtk.Button( label=Lang('remove_note') )
         button_remove_note.connect('clicked', self.evt_remove_note)
-        vbox_main.pack_start(button_remove_note, False, True, 0)
+        vbox_main.pack_start(button_remove_note, True, True, 0)
         
         button_change_main_dir = Gtk.Button( label=Lang('change_main_dir') )
         button_change_main_dir.connect('clicked', self.evt_change_main_dir)
-        vbox_main.pack_start(button_change_main_dir, False, True, 0)
+        vbox_main.pack_start(button_change_main_dir, True, True, 0)
         
         # Mostrar todo y agregar contenedor principal
         self.add(vbox_main)
@@ -45,23 +46,31 @@ class Window_Main(Gtk.Window):
     
     def evt_new_note(self, widget):
         dialog = Dialog_new_note(self)
+        self.hide()
         dialog.run()
         dialog.destroy()
+        self.show_all()
     
     def evt_edit_note(self, widget):
         dialog = Dialog_edit_note(self)
+        self.hide()
         dialog.run()
         dialog.destroy()
+        self.show_all()
     
     def evt_remove_note(self, widget):
         dialog = Dialog_remove_note(self)
+        self.hide()
         dialog.run()
         dialog.destroy()
+        self.show_all()
     
     def evt_change_main_dir(self, widget):
         dialog = Dialog_change_main_dir(self)
+        self.hide()
         dialog.run()
         dialog.destroy()
+        self.show_all()
 
 
 class Dialog_new_note(Gtk.Dialog):
@@ -120,8 +129,10 @@ class Dialog_new_note(Gtk.Dialog):
                 text=note_save_or_not,
                 edit=True
             )
+            self.hide()
             dialog.run()
             dialog.destroy()
+            self.show_all()
 
         elif type(note_save_or_not) is list:
             # El texto creado ya existe, y abrirlo con un editor de texto
@@ -142,8 +153,10 @@ class Dialog_new_note(Gtk.Dialog):
                 text=note_save_or_not[1],
                 edit=True
             )
+            self.hide()
             dialog.run()
             dialog.destroy()
+            self.show_all()
         
         else:
             # Fallo en la creación del archivo
