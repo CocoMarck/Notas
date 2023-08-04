@@ -2,7 +2,10 @@ import os
 import shutil
 from pathlib import Path as pathlib
 from glob import glob
-from .Modulo_System import get_system
+from .Modulo_System import (
+    get_system,
+    View_echo
+)
 
 
 def Path(path='', system=get_system()):

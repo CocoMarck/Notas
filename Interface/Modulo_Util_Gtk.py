@@ -22,8 +22,7 @@ lang = Language()
 
 class Dialog_TextView(Gtk.Dialog):
     def __init__(
-        self,
-        parent,
+        self, parent,
         text = f'{lang["text"]}...',
         edit=False
     ):
