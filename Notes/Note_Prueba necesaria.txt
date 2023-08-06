@@ -1,5 +1,0 @@
-#    Prueba necesaria    #
-Esta es la prueba necesara que se necesita tomar.
-
-Ya que tengo que comprobar que funcione correctamente el programa:
-Notas_Gtk
