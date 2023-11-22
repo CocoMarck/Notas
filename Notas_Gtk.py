@@ -45,29 +45,29 @@ class Window_Main(Gtk.Window):
         self.show_all()
     
     def evt_new_note(self, widget):
-        dialog = Dialog_new_note(self)
         self.hide()
+        dialog = Dialog_new_note(self)
         dialog.run()
         dialog.destroy()
         self.show_all()
     
     def evt_edit_note(self, widget):
-        dialog = Dialog_edit_note(self)
         self.hide()
+        dialog = Dialog_edit_note(self)
         dialog.run()
         dialog.destroy()
         self.show_all()
     
     def evt_remove_note(self, widget):
-        dialog = Dialog_remove_note(self)
         self.hide()
+        dialog = Dialog_remove_note(self)
         dialog.run()
         dialog.destroy()
         self.show_all()
     
     def evt_change_main_dir(self, widget):
-        dialog = Dialog_change_main_dir(self)
         self.hide()
+        dialog = Dialog_change_main_dir(self)
         dialog.run()
         dialog.destroy()
         self.show_all()
