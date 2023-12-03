@@ -14,16 +14,22 @@ from Modulos.Modulo_ShowPrint import(
     Title
 )
 
-import os
+import os, sys
 from pathlib import Path as pathlib
+
+# Obtén la ruta al directorio actual del script
+current_dir = os.path.dirname( os.path.abspath(sys.argv[0]) )
+
+# Construye la ruta a Languages desde el directorio que contiene el módulo
+dir_note_dat = os.path.join(current_dir, 'data', 'notas.dat')
 
 
 def get_data(mode_dict=True):
     '''Obtener datos de ultima nota o directorio de las notas, por medio de un diccionario.'''
-    '''Otener un texto str del archivo "notas.dat" '''
+    '''Obtener un texto str del archivo "notas.dat" '''
     # Leer texto y ignorar comentarios tipo '#'
     note_archive = Text_Read(
-        'data/notas.dat',
+        dir_note_dat,
         'ModeText'
     )
     note_data = Ignore_Comment(
@@ -121,7 +127,7 @@ def New(path=get_path(), text='texto'):
                     pass
                 text_ready += line + '\n'
 
-            with open('data/notas.dat', 'w') as last_note:
+            with open(dir_note_dat, 'w') as last_note:
                 last_note.write(text_ready[:-1])
 
             return file_ready
@@ -146,7 +152,7 @@ def Edit(path=get_path(), text=''):
                 pass
             text_ready += line + '\n'
 
-        with open('data/notas.dat', 'w') as last_note:
+        with open(dir_note_dat, 'w') as last_note:
             last_note.write(text_ready[:-1])
 
         return f'{path}Note_{text}.txt'
@@ -182,7 +188,7 @@ def Change_Path(path=get_path()):
                 pass
             text_ready += line + '\n'
 
-        with open('data/notas.dat', 'w') as write_path:
+        with open(dir_note_dat, 'w') as write_path:
             write_path.write(text_ready[:-1])
         return True
 
