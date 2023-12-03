@@ -1,22 +1,30 @@
 import locale
 from pathlib import Path as pathlib
-from .Modulo_Text import (
+from Modulos.Modulo_Text import (
     Text_Read,
     Ignore_Comment,
     Text_Separe
 )
-from .Modulo_Files import(
+from Modulos.Modulo_Files import(
     Files_List
 )
+import os, sys
 
 
-lang_dir = 'Languages/'
+# Establecer el lenguage default del sistema
+locale.setlocale(locale.LC_ALL, '')
+
+# Obtén la ruta al directorio actual del script
+current_dir = os.path.dirname( os.path.abspath(sys.argv[0]) )
+
+# Construye la ruta a Languages desde el directorio que contiene el módulo
+lang_dir = os.path.join(current_dir, 'Languages')
 
 
 def Default_Language():
     # Obtener lista de languaje default del OS y establecer el lang
     lang_default = locale.getlocale()
-    lang_default = lang_default[0]
+    lang_default = str(lang_default[0])
 
     # Separar el el texto por _ y establecer el texto de la izq
     lang_default = lang_default.split('_')
@@ -29,7 +37,7 @@ def Language( lang=Default_Language() ):
     # Leer Archivo languages
     file_text = Ignore_Comment(
         text=Text_Read(
-            file_and_path=f'{lang_dir}Language_en.dat',
+            file_and_path=os.path.join( lang_dir, 'Language_en.dat'),
             option='ModeText'
         )
     )
@@ -45,7 +53,7 @@ def Language( lang=Default_Language() ):
         pass
 
     elif pathlib(
-        f'{lang_dir}Language_{file_dict["set_lang"]}.dat'
+        os.path.join( lang_dir, f'Language_{file_dict["set_lang"]}.dat')
     ).exists():
         # Si el existe el archivo de lenguaje
         lang = file_dict['set_lang']
@@ -56,7 +64,7 @@ def Language( lang=Default_Language() ):
 
     # Verificar que el archivo lang exista
     if pathlib(
-        f'{lang_dir}Language_{lang}.dat'
+        os.path.join( lang_dir, os.path.join( lang_dir, f'Language_{lang}.dat'))
     ).exists():
         # Si existe el lenguage, entonces se sigue
         pass
@@ -67,12 +75,12 @@ def Language( lang=Default_Language() ):
     
     # Agregar str de languages a un dicionario
     if (
-        pathlib(f'{lang_dir}Language_{lang}.dat').exists()
+        pathlib( os.path.join( lang_dir, f'Language_{lang}.dat') ).exists()
     ):
         # Leer Archivo languages - y eliminar comentarios
         file_text = Ignore_Comment(
             Text_Read(
-                file_and_path=f'{lang_dir}Language_{lang}.dat',
+                file_and_path=os.path.join( lang_dir, f'Language_{lang}.dat'),
                 option='ModeText'
             )
         )
@@ -144,7 +152,7 @@ def set_lang(set_lang='es'):
     # Archivo de Texto Languages.dat
     # Leer y verificar set_lang
     text_lang = Text_Read(
-        file_and_path=f'{lang_dir}Language_en.dat',
+        file_and_path=os.path.join( lang_dir, 'Language_en.dat'),
         option='ModeText'
     )
 
@@ -160,7 +168,7 @@ def set_lang(set_lang='es'):
 
     # Eliminar ultimo salto de linea
     lang_ready = lang_ready[:-1]
-    with open(f'{lang_dir}Language_en.dat', 'w') as text_lang:
+    with open(os.path.join( lang_dir, 'Language_en.dat'), 'w') as text_lang:
         text_lang.write(lang_ready)
 
 
@@ -168,7 +176,7 @@ def get_lang():
     # Archivo de Texto Languages.dat
     # Leer y verificar set_lang
     text_lang = Text_Read(
-        file_and_path=f'{lang_dir}Language_en.dat',
+        file_and_path=os.path.join( lang_dir, 'Language_en.dat'),
         option='ModeText'
     )
 
@@ -204,6 +212,7 @@ def List_Lang():
     for text in list_lang:
         text_ready = (
             (text.replace('Language_', '')).replace('.dat', '')
+            .replace('/', '').replace('\\', '')
         )
         list_ready.append(text_ready)
     
