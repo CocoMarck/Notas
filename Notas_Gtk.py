@@ -1,8 +1,8 @@
-from Interface.Modulo_Util_Gtk import(
+from interface.Modulo_Util_Gtk import(
     Dialog_TextView
 )
-from Modulos.Modulo_Language import get_text as Lang
-from Modulos import Modulo_Notas as Notas
+from data.Modulo_Language import get_text as Lang
+from data import Modulo_Notas as Notas
 
 
 import gi
@@ -16,7 +16,7 @@ class Window_Main(Gtk.Window):
         super().__init__( title='Notas' )
         self.set_resizable(True)
         self.set_default_size(256, -1)
-        self.set_icon_from_file('Icons/Icono-Notas.png')
+        self.set_icon_from_file( Notas.file_icon )
         
         # Contenedor Principal
         vbox_main = Gtk.Box(

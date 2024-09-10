@@ -1,22 +1,22 @@
 import os
 
-from Modulos.Modulo_System import (
+from logic.Modulo_System import (
     get_system,
     CleanScreen
 )
-from Modulos.Modulo_Text import (
+from logic.Modulo_Text import (
     Text_Read
 )
-from Modulos.Modulo_ShowPrint import (
+from interface.Modulo_ShowPrint import (
     Title,
     Continue,
     Separator
 )
-from Modulos.Modulo_Language import (
+from data.Modulo_Language import (
     get_text as Lang,
     YesNo
 )
-import Modulos.Modulo_Notas as Notas
+import data.Modulo_Notas as Notas
 
 
 #path = 'Notes/'

@@ -1,8 +1,8 @@
-from Interface.Modulo_Util_Qt import(
+from interface.Modulo_Util_Qt import(
     Dialog_TextEdit
 )
-from Modulos.Modulo_Language import get_text as Lang
-from Modulos import Modulo_Notas as Notas
+from data.Modulo_Language import get_text as Lang
+from data import Modulo_Notas as Notas
 import os
 
 
@@ -31,7 +31,7 @@ class Window_Main(QWidget):
         super().__init__(*args, **kwargs)
 
         self.setWindowTitle('Notas')
-        self.setWindowIcon(QIcon('Icons/Icono-Notas.png'))
+        self.setWindowIcon( QIcon( Notas.file_icon ) )
         self.resize(256, -1)
 
         # Contenedor principal
