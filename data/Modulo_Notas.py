@@ -13,6 +13,7 @@ from logic.Modulo_Text import(
 from interface.Modulo_ShowPrint import(
     Title
 )
+from entities import Nota
 
 import os, sys
 from pathlib import Path as pathlib
@@ -25,18 +26,23 @@ dir_data = os.path.join(current_dir, 'resources')
 dir_icons = os.path.join( dir_data, 'icons')
 
 # Construye la ruta a Languages desde el directorio que contiene el módulo
-dir_note_dat = os.path.join(dir_data, 'notas.dat')
+dir_note = os.path.join( 'resources', 'Notes' )
+file_note = os.path.join(dir_data, 'notas.dat')
 
 # Icono
 file_icon = os.path.join(dir_icons, 'Icono-Notas.png')
 
 
+
+
 def get_data(mode_dict=True):
-    '''Obtener datos de ultima nota o directorio de las notas, por medio de un diccionario.'''
-    '''Obtener un texto str del archivo "notas.dat" '''
+    '''
+    Obtener datos de ultima nota o directorio de las notas, por medio de un diccionario.
+    Obtener un texto str del archivo "notas.dat" 
+    '''
     # Leer texto y ignorar comentarios tipo '#'
     note_archive = Text_Read(
-        dir_note_dat,
+        file_note,
         'ModeText'
     )
     note_data = Ignore_Comment(
@@ -59,146 +65,153 @@ def get_data(mode_dict=True):
         return note_archive
 
 
-def get_path():
-    '''Obtener el path principal actual donde se guardan las notas'''
-    # Path donde se guardan las notas
-    note_data = get_data()
-    note_path = Path(
-        path=note_data['path']
-    )
-    return note_path
-    #if note_path.startswith(''):
-    #    return f'{Path(path=os.getcwd())}{get_note()}'
-    #else:
-    #    return note_path
 
 
-def get_list(path=get_path()):
+preset = ['Note_', '.txt']
+
+
+
+
+
+
+
+
+def get_list( Nota ):
     '''Obtener una lista de todas las notas disponibles'''
     list_note = Files_List(
-        files='Note_*.txt',
-        path=get_path(),
-        remove_path=True
+        files = f'{preset[0]}*{preset[1]}',
+        path = Path(Nota.path),
+        remove_path = True
     )
     
     list_ready = []
     for text in list_note:
         list_ready.append(
-            (text.replace('Note_', '')).replace('.txt', '')
+            (text.replace(preset[0], '')).replace(preset[1], '')
         )
     
     return list_ready
 
 
-def get_last_note(path=get_path()):
-    '''Devuelve el la ultima nota creada'''
-    note_data = get_data()
-    last_note_file = note_data['last_note']
-    last_note = f"{path}Note_{last_note_file}.txt"
-
-    if pathlib(last_note).exists():
-        return last_note
-    else:
-        return None
 
 
-def New(path=get_path(), text='texto'):
-    '''Crear una nueva nota'''
-    '''Si logra crear el archivo, devolvera un str del nombre del archivo'''
-    '''Si ya existe el archivo, devolvera una lista, con un true y el nombre del archivo'''
-    '''Si falla en la cración der achivo devolcera un boleano tipo False'''
-    # Archivo a crear
-    file_ready = f'{path}Note_{text}.txt'
+def read_Nota( Nota ) -> bool:
+    '''Establecer parametros'''
+    Nota.path = get_data()['path']
     
-    # Verificar que no exista
-    if pathlib(file_ready).exists():
-        # Si existe, retorna una lista
-        return [
-            True, file_ready
-        ]
-    else:
-        try:
-            # Si no existe, crea el archivo y retorna la ruta del archivo creado
-            with open(file_ready, 'w') as text_final:
-                text_final.write(
-                    f'{Title(text=text, print_mode=False)}'
-                )
+    Nota.last_note = None
+    Nota.note = None
+    if not get_data()['last_note'].replace(' ', '') == '':
+        Nota.last_note = get_data()['last_note']
+        if pathlib( os.path.join( Nota.path, f'{preset[0]}{Nota.last_note}{preset[1]}') ).exists():
+            Nota.note = os.path.join( Nota.path, f'{preset[0]}{Nota.last_note}{preset[1]}')
 
-            # Establece el archivo creado en last_note.dat
-            note_archive = get_data(mode_dict=False)
-            text_ready = ''
-            for line in note_archive.split('\n'):
-                if line.startswith('last_note='):
-                    line = f'last_note={text}'
-                else:
-                    pass
-                text_ready += line + '\n'
-
-            with open(dir_note_dat, 'w') as last_note:
-                last_note.write(text_ready[:-1])
-
-            return file_ready
-        except:
-            # Si falla en la creación del archivo, retorna un none
-            return False
-
-
-def Edit(path=get_path(), text=''):
-    '''Editar o ver una nota existente'''
-    list_note = get_list(path=path)
     
-    if text in list_note:
-        # El archivo note_path existe en la list_note
-        # Establece el la nota en last_note.dat
+    return True
+
+
+
+
+def save_Nota( Nota, save=None, remove=None ) -> bool:
+    '''Guardar y esablecer parametros'''
+    
+    bool_value = False
+    
+    # Guardar nota
+    if type(save) == str:
+        # Nota a guardar
+        note_to_save = os.path.join( Nota.path, f'{preset[0]}{save}{preset[1]}')
+
+        # Establecer last_note o no
+        if pathlib(Nota.path).exists():
+            # Detectar que el texto exista y crear Archivo de texto
+            if not pathlib( note_to_save ).exists():
+                with open( note_to_save, 'w') as text_final:
+                    text_final.write(
+                        f'{Title(text=save, print_mode=False)}'
+                    )
+                Nota.last_note = save
+                print('Nota guardada')
+        
+    
+    # Remover nota
+    if type(remove) == str:
+        note_remove = os.path.join(Nota.path, f'{preset[0]}{remove}{preset[1]}')
+        if os.path.isfile( note_remove ):
+            bool_value = True
+            # Existe el archivo, se eliminara
+            os.remove( note_remove )
+            print('Nota eliminada')
+            
+            if Nota.last_note == remove:
+                Nota.last_note = None
+    
+
+    # Establecer last_note al archivo notas.dat
+    if Nota.last_note == get_data()['last_note']:
+        print('Nota ya establecida previamente')
+
+    elif Nota.last_note == None:
+        print('Quitar ultima nota accedida')
         note_archive = get_data(mode_dict=False)
         text_ready = ''
         for line in note_archive.split('\n'):
             if line.startswith('last_note='):
-                line = f'last_note={text}'
+                line = f'last_note='
             else:
                 pass
             text_ready += line + '\n'
 
-        with open(dir_note_dat, 'w') as last_note:
+        with open(file_note, 'w') as last_note:
             last_note.write(text_ready[:-1])
 
-        return f'{path}Note_{text}.txt'
     else:
-        # El archivo note_path no existe en la list_note
-        return None
+        print( 'Establecer ultima nota accedida al archivo' )
+        note_archive = get_data(mode_dict=False)
+        text_ready = ''
+        for line in note_archive.split('\n'):
+            if line.startswith('last_note='):
+                line = f'last_note={Nota.last_note}'
+            else:
+                pass
+            text_ready += line + '\n'
+
+        with open(file_note, 'w') as last_note:
+            last_note.write(text_ready[:-1])
+    
 
 
-def Remove(path=get_path(), text=''):
-    '''Eliminar una nota'''
-    '''Retorna un True o un False, si se puede o no borrar el archivo'''
-    if os.path.isfile(f'{path}Note_{text}.txt'):
-        # El arhcivo que se quiere eliminar es correcto
-        os.remove(f'{path}Note_{text}.txt')
-        return True
-
-    else:
-        # Ese no es un arhcivo o no existe.
-        return False
-
-
-def Change_Path(path=get_path()):
-    '''Cambiar directorio de las notas a guardar'''
-    '''Retorna un True o un False, si se puede o no cambiar el directorio'''
-    if os.path.isdir(path):
-        # El directorio si es correcto, ahora se guardara
+    # Si exsite la carpeta, guardarla en el archivo
+    if not Nota.path == get_data()['path']:
+        if pathlib(Nota.path).exists():
+            print('Guardando nueva ruta en el archivo')
+            bool_value = True
+        else:
+            print('Ruta erronea, estableciendo una default')
+            Nota.path = dir_note
+        
+        # Agregarndo path en notas.dat
         note_archive = get_data(mode_dict=False)
         text_ready = ''
         for line in note_archive.split('\n'):
             if line.startswith('path='):
-                line = f'path={path}'
-            else:
-                pass
+                line = f'path={Nota.path}'
             text_ready += line + '\n'
 
-        with open(dir_note_dat, 'w') as write_path:
-            write_path.write(text_ready[:-1])
-        return True
+        with open(file_note, 'w') as path_note:
+            path_note.write(text_ready[:-1])
+    
 
-    else:
-        # El directorio es incorrecto
-        return False
+    # Eetablecer archivo actual si es que existe
+    Nota.note = None
+    if not Nota.last_note == None:
+        if pathlib( os.path.join( Nota.path, f'{preset[0]}{Nota.last_note}{preset[1]}') ).exists():
+            Nota.note = os.path.join( Nota.path, f'{preset[0]}{Nota.last_note}{preset[1]}')
+    
+    
+    return bool_value
+
+
+
+data_Nota = Nota
+read_Nota( data_Nota )
