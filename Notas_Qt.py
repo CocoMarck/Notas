@@ -2,7 +2,7 @@ from interface.Modulo_Util_Qt import(
     Dialog_TextEdit
 )
 from data.Modulo_Language import get_text as Lang
-from data import Modulo_Notas as Notas
+from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, file_icon, get_list as Nota_get_list)
 import os
 
 
@@ -31,7 +31,7 @@ class Window_Main(QWidget):
         super().__init__(*args, **kwargs)
 
         self.setWindowTitle('Notas')
-        self.setWindowIcon( QIcon( Notas.file_icon ) )
+        self.setWindowIcon( QIcon( file_icon ) )
         self.resize(256, -1)
 
         # Contenedor principal
@@ -130,9 +130,8 @@ class Dialog_new_note(QDialog):
             pass
 
         # Crear o no el archivo necesario
-        note_save_or_not = Notas.New(
-            text=note
-        )
+        save_Nota( data_Nota, save=note )
+        note_save_or_not = data_Nota.note
         if type(note_save_or_not) is str:
             # Abrir archivo con un editor de texto
             self.hide()
@@ -203,7 +202,7 @@ class Dialog_edit_note(QDialog):
         button_last_note.clicked.connect(self.evt_edit_last_note)
         vbox.addWidget(button_last_note)
         
-        for note in Notas.get_list():
+        for note in Nota_get_list( data_Nota ):
             button = QPushButton( note )
             button.clicked.connect(
                 partial(self.evt_edit_a_note, button=button)
@@ -218,7 +217,8 @@ class Dialog_edit_note(QDialog):
     
     def evt_edit_last_note(self):
         # Ultimo texto creado
-        edit = Notas.get_last_note()
+        read_Nota( data_Nota )
+        edit = data_Nota.note
         if type(edit) is str:
             # El texto existe y se editara con un TextView
             Dialog_TextEdit(
@@ -235,9 +235,11 @@ class Dialog_edit_note(QDialog):
             )
     
     def evt_edit_a_note(self, button):
+        data_Nota.last_note = button.text()
+        save_Nota( data_Nota )
         Dialog_TextEdit(
             self,
-            text=Notas.Edit( text=button.text() ),
+            text=data_Nota.note,
             edit=True
         ).exec()
 
@@ -271,7 +273,7 @@ class Dialog_remove_note(QDialog):
         widget_buttons.setLayout(vbox)
         
         # Scroll - Layout - Botones en orden vertical
-        for note in Notas.get_list():
+        for note in Nota_get_list( data_Nota ):
             button = QPushButton( note )
             button.clicked.connect(
                 partial(self.evt_remove_a_note, button=button)
@@ -296,7 +298,7 @@ class Dialog_remove_note(QDialog):
         
         if message_box_question == QMessageBox.StandardButton.Yes:
             # Eliminar una nota
-            if Notas.Remove( text=button.text() ) == True:
+            if save_Nota( data_Nota, remove=button.text() ) == True:
                 # Se pudo remover
                 QMessageBox.information(
                     self,
@@ -341,7 +343,7 @@ class Dialog_change_main_dir(QDialog):
             placeholderText=Lang('dir'),
             clearButtonEnabled=True
         )
-        self.entry_main_dir.setText( Notas.get_path() )
+        self.entry_main_dir.setText( data_Nota.path )
         hbox.addWidget(self.entry_main_dir)
         
         button_set_dir = QPushButton(
@@ -380,9 +382,8 @@ class Dialog_change_main_dir(QDialog):
     
     def evt_change_main_dir(self):
         # Cambiar ruta principal donde se guardan las notas
-        new_path = Notas.Change_Path(
-            path=self.entry_main_dir.text()
-        )
+        data_Nota.path = self.entry_main_dir.text()
+        new_path = save_Nota( data_Nota )
         if new_path == True:
             # Se pudo cambiar la ruta principal de las notas
             # Mostrar mensaje informativo, y cerrar todo el programa

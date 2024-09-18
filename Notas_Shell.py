@@ -16,7 +16,7 @@ from data.Modulo_Language import (
     get_text as Lang,
     YesNo
 )
-import data.Modulo_Notas as Notas
+from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, get_list as Nota_get_list)
 
 
 #path = 'Notes/'
@@ -76,7 +76,8 @@ def New_Note():
         pass
     
     # Crear el archivo necesario.
-    text_ready = Notas.New( text=text)
+    save_Nota( data_Nota, save=text )
+    text_ready = data_Nota.note
     if type(text_ready) is str:
         # Abrir nano en base al texto creado
         if get_system() == 'linux':
@@ -113,7 +114,7 @@ def Edit_Note():
 
     number = 1
     dict_text = {}
-    for note in Notas.get_list():
+    for note in Nota_get_list( data_Nota ):
         number += 1
         dict_text.update({ str(number) : note })
     
@@ -128,7 +129,7 @@ def Edit_Note():
     # Opcion elegida
     if option == '1':
         # Ultimo texto creado
-        edit = Notas.get_last_note()
+        edit = data_Nota.note
         if type(edit) is str:
             if get_system() == 'linux':
                 os.system(f'nano "{edit}"')
@@ -141,8 +142,10 @@ def Edit_Note():
             )
 
     elif option in dict_text:
-        # Eleguir una nota, entre las notas existentes.
-        edit = Notas.Edit(text=dict_text[option])
+        # Elegir una nota, entre las notas existentes.
+        data_Nota.last_note = dict_text[option]
+        save_Nota( data_Nota )
+        edit = data_Nota.note
         if get_system() == 'linux':
             os.system(f'nano "{edit}"')
         elif get_system() == 'win':
@@ -160,7 +163,7 @@ def Remove_Note():
 
     number = 0
     dict_text = {}
-    for note in Notas.get_list():
+    for note in Nota_get_list( data_Nota ):
         number += 1
         dict_text.update({ str(number) : note })
 
@@ -176,7 +179,8 @@ def Remove_Note():
     # Opcion elegida
     if option in dict_text:
         # Eleguir una nota, entre las notas existentes.
-        if Notas.Remove(text=dict_text[option]) == True:
+        remove = save_Nota( data_Nota, remove=dict_text[option] )
+        if remove == True:
             # Se pudo remover
             print(Lang('remove_good'))
         else:
@@ -195,16 +199,15 @@ def Change_Path_Note():
     Title(Lang("dir_main"))
     print(
         f'{Lang("dir_current")}:\n' +
-        Notas.get_path() + '\n'
+        data_Nota.path + '\n'
     )
     option = Continue(
         Lang("change_main_dir")
     )
     
     if option == YesNo('yes'):
-        new_path = Notas.Change_Path(
-            path=input(f'{Lang("dir")}: ')
-        )
+        data_Nota.path = input(f'{Lang("dir")}: ')
+        new_path = save_Nota( data_Nota )
         if new_path == True:
             print( Lang('dir_change_good') )
         elif new_path == False:

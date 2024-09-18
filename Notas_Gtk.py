@@ -2,7 +2,7 @@ from interface.Modulo_Util_Gtk import(
     Dialog_TextView
 )
 from data.Modulo_Language import get_text as Lang
-from data import Modulo_Notas as Notas
+from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, file_icon, get_list as Nota_get_list)
 
 
 import gi
@@ -16,7 +16,7 @@ class Window_Main(Gtk.Window):
         super().__init__( title='Notas' )
         self.set_resizable(True)
         self.set_default_size(256, -1)
-        self.set_icon_from_file( Notas.file_icon )
+        self.set_icon_from_file( file_icon )
         
         # Contenedor Principal
         vbox_main = Gtk.Box(
@@ -119,9 +119,8 @@ class Dialog_new_note(Gtk.Dialog):
             pass
         
         # Crear o no el archivo necesario
-        note_save_or_not = Notas.New(
-            text=note
-        )
+        save_Nota( data_Nota, save=note )
+        note_save_or_not = data_Nota.note
         if type(note_save_or_not) is str:
             # Abrir archivo con un editor de texto.
             dialog = Dialog_TextView(
@@ -208,7 +207,7 @@ class Dialog_edit_note(Gtk.Dialog):
         button.connect('clicked', self.evt_edit_last_note)
         vbox_scroll.pack_start(button, False, True, 0)
         
-        for note in Notas.get_list():
+        for note in Nota_get_list( data_Nota ):
             button = Gtk.Button( label=note )
             button.connect('clicked', self.evt_edit_a_note)
             vbox_scroll.pack_start(button, False, True, 0)
@@ -219,7 +218,8 @@ class Dialog_edit_note(Gtk.Dialog):
     
     def evt_edit_last_note(self, button):
         # Ultimo texto creado
-        edit = Notas.get_last_note()
+        read_Nota( data_Nota )
+        edit = data_Nota.note
         if type(edit) is str:
             # El texto existe y se editara con un TextView
             dialog = Dialog_TextView(
@@ -243,9 +243,11 @@ class Dialog_edit_note(Gtk.Dialog):
     
     def evt_edit_a_note(self, button):
         # Editar la nota elegida, basado en el texto/label del button precionado.
+        data_Nota.last_note=button.get_label()
+        save_Nota( data_Nota )
         dialog = Dialog_TextView(
             self,
-            text=Notas.Edit( text=button.get_label() ),
+            text=data_Nota.note,
             edit=True
         )
         dialog.run()
@@ -281,7 +283,7 @@ class Dialog_remove_note(Gtk.Dialog):
         )
         scroll_window.add(vbox_scroll)
         
-        for note in Notas.get_list():
+        for note in Nota_get_list( data_Nota ):
             button = Gtk.Button(label=note)
             button.connect('clicked', self.evt_remove_a_note)
             vbox_scroll.pack_start(button, False, True, 0)
@@ -303,7 +305,7 @@ class Dialog_remove_note(Gtk.Dialog):
         
         if response == Gtk.ResponseType.YES:
             # Eliminar una nota
-            if Notas.Remove( text=button.get_label() ) == True:
+            if save_Nota( data_Nota, remove=button.get_label() ) == True:
                 # Se pudo remover
                 dialog_info = Gtk.MessageDialog(
                     transient_for=self,
@@ -358,7 +360,7 @@ class Dialog_change_main_dir(Gtk.Dialog):
         self.entry_main_dir = Gtk.Entry()
         self.entry_main_dir.set_placeholder_text( Lang('dir') )
         self.entry_main_dir.set_hexpand(True)
-        self.entry_main_dir.set_text( Notas.get_path() )
+        self.entry_main_dir.set_text( data_Nota.path )
         hbox.pack_start(self.entry_main_dir, False, True, 0)
         
         button_set_dir = Gtk.Button( label=Lang('set_dir') )
@@ -402,9 +404,8 @@ class Dialog_change_main_dir(Gtk.Dialog):
     
     def evt_change_main_dir(self, widget):
         # Cambiar ruta principal donde se guardan las notas
-        new_path = Notas.Change_Path(
-            path=self.entry_main_dir.get_text()
-        )
+        data_Nota.path = self.entry_main_dir.get_text()
+        new_path = save_Nota( data_Nota )
         if new_path == True:
             # Se pudo cambiar la ruta principal de las notas
             dialog_info = Gtk.MessageDialog(
