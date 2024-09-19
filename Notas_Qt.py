@@ -65,18 +65,20 @@ class Window_Main(QWidget):
 
     def evt_edit_note(self):
         self.hide()
-        Dialog_edit_note(self).exec()
+        Dialog_edit_remove_note(self, option='edit').exec()
         self.show()
 
     def evt_remove_note(self):
         self.hide()
-        Dialog_remove_note(self).exec()
+        Dialog_edit_remove_note(self, option='remove').exec()
         self.show()
 
     def evt_change_main_dir(self):
         self.hide()
         Dialog_change_main_dir(self).exec()
         self.show()
+
+
 
 
 class Dialog_new_note(QDialog):
@@ -120,7 +122,7 @@ class Dialog_new_note(QDialog):
         self.show()
 
     def evt_save_note(self):
-        # Nota a guarder
+        # Nota a guardar
         note = self.entry_new_note.text()
         if note =='':
             # Si no se escribio nada, la nota sera 'texto'
@@ -167,17 +169,19 @@ class Dialog_new_note(QDialog):
             pass
 
         self.close()
+        
+        
 
 
-class Dialog_edit_note(QDialog):
-    def __init__(
-        self, parent=None
-    ):
+class Dialog_edit_remove_note(QDialog):
+    def __init__(self, parent=None, option = 'edit'):
         super().__init__(parent)
-
+        
         self.setWindowTitle( Lang('edit_note') )
         self.resize(256, 256)
-
+        
+        self.mode = option
+        
         # Contenedor Pirncipal
         vbox_main = QVBoxLayout()
         self.setLayout(vbox_main)
@@ -188,26 +192,20 @@ class Dialog_edit_note(QDialog):
         scroll_area.setVerticalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAsNeeded
         )
+        scroll_area.setWidgetResizable(True) # Para centrar el scroll
         vbox_main.addWidget(scroll_area)
         
         # Scroll - Contenedor de Widgets
         widget_buttons = QWidget()
         
         # Scroll - Layout
-        vbox = QVBoxLayout()
-        widget_buttons.setLayout(vbox)
+        self.widget_vbox = QVBoxLayout()
+        widget_buttons.setLayout(self.widget_vbox)
         
         # Scroll - Layout - Botones en orden vertical
-        button_last_note = QPushButton( Lang('last_note') )
-        button_last_note.clicked.connect(self.evt_edit_last_note)
-        vbox.addWidget(button_last_note)
-        
-        for note in Nota_get_list( data_Nota ):
-            button = QPushButton( note )
-            button.clicked.connect(
-                partial(self.evt_edit_a_note, button=button)
-            )
-            vbox.addWidget(button)
+        self.list_buttons = []
+        self.update_scroll()
+
         
         # Scroll - Agregar el Contenedor
         scroll_area.setWidget(widget_buttons)
@@ -215,109 +213,93 @@ class Dialog_edit_note(QDialog):
         # Fin, Mostrar ventanta y sus widgets agregados
         self.show()
     
-    def evt_edit_last_note(self):
-        # Ultimo texto creado
+    
+    def update_scroll( self ):
+        # Scroll | Quitar todos los widgets del layout 
+        for i in reversed(range(self.widget_vbox.count())): 
+            self.widget_vbox.itemAt(i).widget().setParent(None)
+    
+        # Scroll | Si esta en modo editar agregar boton de ultima nota accedida
+        if self.mode == 'edit':
+            button_last_note = QPushButton( Lang('last_note') )
+            button_last_note.clicked.connect(self.evt_last_note)
+            self.widget_vbox.addWidget(button_last_note)
+
+        # Scroll | Agregar todos los botones al layout
+        self.list_buttons = []
+        list_note = Nota_get_list( data_Nota )
+        for index in range( 0, len(list_note) ):
+            self.list_buttons.append( QPushButton( list_note[index] ) )
+            self.list_buttons[index].clicked.connect(
+                partial(self.evt_set_note, button=self.list_buttons[index])
+            )
+            self.widget_vbox.addWidget(self.list_buttons[index])
+            
+            
+    def evt_last_note(self):
+        # Editar ultimo texto creado
         read_Nota( data_Nota )
-        edit = data_Nota.note
-        if type(edit) is str:
+        if type(data_Nota.note) is str:
             # El texto existe y se editara con un TextView
             Dialog_TextEdit(
                 self,
-                text=edit,
+                text=data_Nota.note,
                 edit=True
             ).exec()
-        elif edit == None:
+        elif data_Nota.note == None:
             # Mostrar mensaje de info de que no existe.
             QMessageBox.critical(
                 self,
                 'ERROR', # Titulo   
                 Lang('no_note') # Texto de ventana
             )
-    
-    def evt_edit_a_note(self, button):
-        data_Nota.last_note = button.text()
-        save_Nota( data_Nota )
-        Dialog_TextEdit(
-            self,
-            text=data_Nota.note,
-            edit=True
-        ).exec()
-
-
-class Dialog_remove_note(QDialog):
-    def __init__(
-        self, parent=None
-    ):
-        super().__init__(parent)
-
-        self.setWindowTitle( Lang('remove_note') )
-        self.resize(256, 256)
-
-        # Contenedor Pirncipal
-        vbox_main = QVBoxLayout()
-        self.setLayout(vbox_main)
-        
-        # Secciones Verticales - Botones
-        # Scroll
-        scroll_area = QScrollArea()
-        scroll_area.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAsNeeded
-        )
-        vbox_main.addWidget(scroll_area)
-        
-        # Scroll - Contenedor de Widgets
-        widget_buttons = QWidget()
-        
-        # Scroll - Layout
-        vbox = QVBoxLayout()
-        widget_buttons.setLayout(vbox)
-        
-        # Scroll - Layout - Botones en orden vertical
-        for note in Nota_get_list( data_Nota ):
-            button = QPushButton( note )
-            button.clicked.connect(
-                partial(self.evt_remove_a_note, button=button)
-            )
-            vbox.addWidget(button)
-        
-        # Scroll - Agregar el Contenedor
-        scroll_area.setWidget(widget_buttons)
-
-        # Fin, Mostrar ventanta y sus widgets agregados
-        self.show()
-    
-    def evt_remove_a_note(self, button):
-        # Verificar remover o no la nota
-        message_box_question = QMessageBox.question(
-            self,
-            Lang('remove_note'), # Titulo
-            Lang('remove_note'), # Texto
-            QMessageBox.StandardButton.Yes |
-            QMessageBox.StandardButton.No
-        )
-        
-        if message_box_question == QMessageBox.StandardButton.Yes:
-            # Eliminar una nota
-            if save_Nota( data_Nota, remove=button.text() ) == True:
-                # Se pudo remover
-                QMessageBox.information(
-                    self,
-                    Lang('remove_note'),
-                    Lang('remove_good'),
-                    QMessageBox.StandardButton.Ok
-                )
-            else:
-                # No se pudo remover
-                QMessageBox.critical(
-                    self,
-                    Lang('remove_note'),
-                    Lang('remove_not_good')
-                )
+            
+            
+    def evt_set_note(self, button=QPushButton):
+        # Remover o establecer ultima nota
+        # Abrir texto o remover texto seleccionado 
+        if self.mode == 'edit':
+            # Editar | Abrir texto | Establecer ultima nota
+            data_Nota.last_note = button.text()
+            save_Nota( data_Nota )
+            Dialog_TextEdit(
+                self,
+                text=data_Nota.note,
+                edit=True
+            ).exec()
         else:
-            # Se eligio no eliminar la nota
-            pass
-        
-        self.close()
+            # Remover | Nota seleccionada
+            # Preguntar el remover
+            message_box_question = QMessageBox.question(
+                self,
+                Lang('remove_note'), # Titulo
+                Lang('remove_note'), # Texto
+                QMessageBox.StandardButton.Yes |
+                QMessageBox.StandardButton.No
+            )
+            
+            if message_box_question == QMessageBox.StandardButton.Yes:
+                # Eliminar una nota
+                if save_Nota( data_Nota, remove=button.text() ) == True:
+                    # Se pudo remover
+                    QMessageBox.information(
+                        self,
+                        Lang('remove_note'),
+                        Lang('remove_good'),
+                        QMessageBox.StandardButton.Ok
+                    )
+                else:
+                    # No se pudo remover
+                    QMessageBox.critical(
+                        self,
+                        Lang('remove_note'),
+                        Lang('remove_not_good')
+                    )
+                
+                # Actualizar botones/notas disponibles
+                self.update_scroll()
+
+
 
 
 class Dialog_change_main_dir(QDialog):
