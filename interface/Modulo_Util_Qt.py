@@ -28,12 +28,13 @@ class Dialog_TextEdit(QDialog):
     def __init__(
         self, parent=None,
         text=f'{lang["text"]}...',
-        edit=False
+        edit=False,
+        size=[512, 256]
     ):
         super().__init__(parent)
         
         self.setWindowTitle( lang['text'] )
-        self.resize(512, 256)
+        self.resize( size[0], size[1] )
         
         # Verificar si el Text Edit es editable
         if edit == True:

@@ -1,21 +1,50 @@
+from data.Modulo_Language import get_text as Lang
+from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, get_list as Nota_get_list)
+from data.interface_data import file_icon, file_font
+
 from interface.Modulo_Util_Gtk import(
     Dialog_TextView
 )
-from data.Modulo_Language import get_text as Lang
-from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, file_icon, get_list as Nota_get_list)
+from interface.interface_number import *
+from interface.css_util import *
 
 
-import gi
+import gi, gtk
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
+
+
+
+# Estilo de Interfaz.
+# Convertir estilo en bytes
+css_style = ''
+for widget in get_list_text_widget('Gtk'):
+    css_style += text_widget_style( 
+        widget=widget, font=file_font, font_size=num_font, 
+        margin=num_font, padding=num_space_padding, idented=4
+    )
+css_style = str.encode(css_style)
+
+# Aplicar estilo
+screen = Gdk.Screen.get_default()
+provider = Gtk.CssProvider()
+style_context = Gtk.StyleContext()
+style_context.add_provider_for_screen(
+    screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+)
+provider.load_from_data( css_style )
+print( css_style )
+print( type(css_style) )
+
+
 
 
 class Window_Main(Gtk.Window):
     def __init__(self):
         super().__init__( title='Notas' )
         self.set_resizable(True)
-        self.set_default_size(256, -1)
+        self.set_default_size( nums_win_main[0], nums_win_main[1] )
         self.set_icon_from_file( file_icon )
         
         # Contenedor Principal
@@ -80,7 +109,7 @@ class Dialog_new_note(Gtk.Dialog):
             transient_for=parent, flags=0
         )
         self.set_resizable(True)
-        self.set_default_size(308, -1)
+        self.set_default_size( nums_win_new[0], nums_win_new[1] )
         
         # Contenedor Principal
         vbox_main = Gtk.Box(
@@ -126,7 +155,8 @@ class Dialog_new_note(Gtk.Dialog):
             dialog = Dialog_TextView(
                 self,
                 text=note_save_or_not,
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             )
             self.hide()
             dialog.run()
@@ -150,7 +180,8 @@ class Dialog_new_note(Gtk.Dialog):
             dialog = Dialog_TextView(
                 self,
                 text=note_save_or_not[1],
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             )
             self.hide()
             dialog.run()
@@ -183,7 +214,7 @@ class Dialog_edit_note(Gtk.Dialog):
             transient_for=parent, flags=0
         )
         self.set_resizable(True)
-        self.set_default_size(512, 308)
+        self.set_default_size( nums_win_edit_remove[0], nums_win_edit_remove[1] )
         
         # Contenedor Principal
         vbox_main = Gtk.Box(
@@ -225,7 +256,8 @@ class Dialog_edit_note(Gtk.Dialog):
             dialog = Dialog_TextView(
                 self,
                 text=edit,
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             )
             dialog.run()
             dialog.destroy()
@@ -248,7 +280,8 @@ class Dialog_edit_note(Gtk.Dialog):
         dialog = Dialog_TextView(
             self,
             text=data_Nota.note,
-            edit=True
+            edit=True,
+            size=nums_win_text_edit
         )
         dialog.run()
         dialog.destroy()
@@ -263,7 +296,7 @@ class Dialog_remove_note(Gtk.Dialog):
             transient_for=parent, flags=0
         )
         self.set_resizable(True)
-        self.set_default_size(512, 308)
+        self.set_default_size( nums_win_edit_remove[0], nums_win_edit_remove[1] )
         
         # Contenedor Principal
         vbox_main = Gtk.Box(
@@ -345,7 +378,7 @@ class Dialog_change_main_dir(Gtk.Dialog):
             transient_for=parent, flags=0
         )
         self.set_resizable(True)
-        self.set_default_size(512, 128)
+        self.set_default_size( nums_win_change_dir[0], nums_win_change_dir[1] )
         
         # Contenedor Principal
         vbox_main = Gtk.Box(

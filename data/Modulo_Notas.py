@@ -29,9 +29,6 @@ dir_icons = os.path.join( dir_data, 'icons')
 dir_note = os.path.join( 'resources', 'Notes' )
 file_note = os.path.join(dir_data, 'notas.dat')
 
-# Icono
-file_icon = os.path.join(dir_icons, 'Icono-Notas.png')
-
 
 
 

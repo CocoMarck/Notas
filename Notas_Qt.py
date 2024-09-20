@@ -1,12 +1,13 @@
-from interface.Modulo_Util_Qt import(
-    Dialog_TextEdit
-)
 from data.Modulo_Language import get_text as Lang
-from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, file_icon, get_list as Nota_get_list)
-import os
+from data.Modulo_Notas import (data_Nota, read_Nota, save_Nota, get_list as Nota_get_list)
+from data.interface_data import file_icon, file_font
+
+from interface.Modulo_Util_Qt import Dialog_TextEdit
+from interface.interface_number import *
+from interface.css_util import *
 
 
-import sys
+import sys, os
 from pathlib import Path
 from functools import partial
 from PyQt6.QtWidgets import(
@@ -20,10 +21,21 @@ from PyQt6.QtWidgets import(
     QLabel,
     QPushButton,
     QVBoxLayout,
-    QHBoxLayout
+    QHBoxLayout,
+    QInputDialog
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
+
+
+# Estilo de ventana.
+qss_style = ''
+for widget in get_list_text_widget('Qt'):
+    qss_style += text_widget_style( 
+        widget=widget, font=file_font, font_size=num_font, 
+        margin=num_font, padding=num_space_padding, idented=4
+    )
+print(qss_style)
 
 
 class Window_Main(QWidget):
@@ -32,7 +44,7 @@ class Window_Main(QWidget):
 
         self.setWindowTitle('Notas')
         self.setWindowIcon( QIcon( file_icon ) )
-        self.resize(256, -1)
+        self.resize( nums_win_main[0], nums_win_main[1] )
 
         # Contenedor principal
         vbox_main = QVBoxLayout()
@@ -61,7 +73,19 @@ class Window_Main(QWidget):
     def evt_new_note(self):
         self.hide()
         Dialog_new_note(self).exec()
+        '''
+        note, ok = QInputDialog.getText(
+            self,
+            Lang('new_note'), # Titulo
+            f"{Lang('new_note')}:"
+        )
+        if ok and note:
+            # Agregar nota, solo si se preciona ok y hay texto en el input
+            save_Nota( data_Nota, save=note )
+        '''
+            
         self.show()
+
 
     def evt_edit_note(self):
         self.hide()
@@ -88,7 +112,7 @@ class Dialog_new_note(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle( Lang('new_note') )
-        self.resize(308, 1)
+        self.resize( nums_win_new[0], nums_win_new[1] )
 
         # Contenedor Pirncipal
         vbox_main = QVBoxLayout()
@@ -140,7 +164,8 @@ class Dialog_new_note(QDialog):
             Dialog_TextEdit(
                 self,
                 text=note_save_or_not,
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             ).exec()
             self.show()
 
@@ -158,7 +183,8 @@ class Dialog_new_note(QDialog):
             Dialog_TextEdit(
                 self,
                 text=note_save_or_not[1],
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             ).exec()
             self.show()
 
@@ -178,7 +204,7 @@ class Dialog_edit_remove_note(QDialog):
         super().__init__(parent)
         
         self.setWindowTitle( Lang('edit_note') )
-        self.resize(256, 256)
+        self.resize( nums_win_edit_remove[0], nums_win_edit_remove[1] )
         
         self.mode = option
         
@@ -244,7 +270,8 @@ class Dialog_edit_remove_note(QDialog):
             Dialog_TextEdit(
                 self,
                 text=data_Nota.note,
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             ).exec()
         elif data_Nota.note == None:
             # Mostrar mensaje de info de que no existe.
@@ -265,7 +292,8 @@ class Dialog_edit_remove_note(QDialog):
             Dialog_TextEdit(
                 self,
                 text=data_Nota.note,
-                edit=True
+                edit=True,
+                size=nums_win_text_edit
             ).exec()
         else:
             # Remover | Nota seleccionada
@@ -309,7 +337,7 @@ class Dialog_change_main_dir(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle( Lang('dir_main') )
-        self.resize(512, 128)
+        self.resize( nums_win_change_dir[0], nums_win_change_dir[1] )
 
         # Contenedor Pirncipal
         vbox_main = QVBoxLayout()
@@ -389,5 +417,6 @@ class Dialog_change_main_dir(QDialog):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyleSheet(qss_style)
     window = Window_Main()
     sys.exit(app.exec())

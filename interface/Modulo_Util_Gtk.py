@@ -24,12 +24,13 @@ class Dialog_TextView(Gtk.Dialog):
     def __init__(
         self, parent,
         text = f'{lang["text"]}...',
-        edit=False
+        edit=False,
+        size=[512, 256]
     ):
         super().__init__(
             title=lang['text'], transient_for=parent, flags=0
         )
-        self.set_default_size(512, 256)
+        self.set_default_size( size[0], size[1] )
         
         # Verificar si el Text View sera es editable
         if edit == True:
