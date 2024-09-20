@@ -22,8 +22,9 @@ css_style = ''
 for widget in get_list_text_widget('Gtk'):
     css_style += text_widget_style( 
         widget=widget, font=file_font, font_size=num_font, 
-        margin=num_font, padding=num_space_padding, idented=4
+        margin=None, padding=num_space_padding, idented=4
     )
+print( css_style )
 css_style = str.encode(css_style)
 
 # Aplicar estilo

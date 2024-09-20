@@ -1,13 +1,10 @@
+'''
+Dialogos con funciones especificas, hechos para Gtk.
+'''
 from os.path import isfile
-from logic.Modulo_System import(
-    Command_Run
-)
-from logic.Modulo_Text import(
-    Text_Read
-)
-from interface.Modulo_ShowPrint import(
-    Separator
-)
+from logic.Modulo_System import Command_Run
+from logic.Modulo_Text import Text_Read
+from interface.Modulo_ShowPrint import Separator
 from data.Modulo_Language import Language
 
 import threading
@@ -63,6 +60,7 @@ class Dialog_TextView(Gtk.Dialog):
         
         self.text_view = Gtk.TextView()
         #text_view.set_size_request(512, 256)
+        self.text_view.set_wrap_mode(True) # Ajustar lineas
         self.text_view.set_editable(edit)
         text_buffer = self.text_view.get_buffer()
         text_buffer.set_text(text)
@@ -109,13 +107,14 @@ class Dialog_Command_Run(Gtk.Dialog):
         self,
         parent, cfg='',
         txt=lang['exec'],
-        cfg_file=''
+        cfg_file='',
+        size=[512, 256]
     ):
         super().__init__(
             title=f"{lang['cmd']} - {lang['exec']}",
             transient_for=parent, flags=0
         )
-        self.set_default_size(512, 256)
+        self.set_default_size( size[0], size[1] )
         self.cfg = cfg
         self.cfg_file = cfg_file
         
@@ -184,9 +183,10 @@ class Dialog_Wait(Gtk.Dialog):
     def __init__(self, parent, text=lang['help_wait']):
         super().__init__(
             title=lang['help_wait'],
-            transient_for=parent, flags=0
+            transient_for=parent, flags=0,
+            size=[256, 128]
         )
-        self.set_default_size(256, 128)
+        self.set_default_size( size[0], size[1] )
         
         # Contenedor Principal - VBox
         vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
