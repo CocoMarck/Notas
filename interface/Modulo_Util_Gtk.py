@@ -1,15 +1,15 @@
 '''
 Dialogos con funciones especificas, hechos para Gtk.
 '''
-from os.path import isfile
+from os.path import isfile, isdir
 from logic.Modulo_System import Command_Run
 from logic.Modulo_Text import Text_Read
 from interface.Modulo_ShowPrint import Separator
-from data.Modulo_Language import Language
+from data.Modulo_Language import Language, get_text as Language_get_text
 
 import threading
-import gi
 
+import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 
@@ -22,7 +22,8 @@ class Dialog_TextView(Gtk.Dialog):
         self, parent,
         text = f'{lang["text"]}...',
         edit=False,
-        size=[512, 256]
+        size=[512, 256],
+        line_wrap=True
     ):
         super().__init__(
             title=lang['text'], transient_for=parent, flags=0
@@ -60,7 +61,7 @@ class Dialog_TextView(Gtk.Dialog):
         
         self.text_view = Gtk.TextView()
         #text_view.set_size_request(512, 256)
-        self.text_view.set_wrap_mode(True) # Ajustar lineas
+        self.text_view.set_wrap_mode(line_wrap) # Ajustar lineas
         self.text_view.set_editable(edit)
         text_buffer = self.text_view.get_buffer()
         text_buffer.set_text(text)
@@ -108,7 +109,8 @@ class Dialog_Command_Run(Gtk.Dialog):
         parent, cfg='',
         txt=lang['exec'],
         cfg_file='',
-        size=[512, 256]
+        size=[512, 256],
+        line_wrap=True
     ):
         super().__init__(
             title=f"{lang['cmd']} - {lang['exec']}",
@@ -138,7 +140,7 @@ class Dialog_Command_Run(Gtk.Dialog):
         cmd_scroll.set_hexpand(True)
         cmd_scroll.set_vexpand(True)
         cmd_label = Gtk.Label()
-        #cmd_label.set_line_wrap(True)
+        cmd_label.set_line_wrap(line_wrap)
         cmd_label.set_selectable(True)
         #cmd_label.set_justify(Gtk.Justification.LEFT)
         cmd_label.set_text(f'{self.cfg}')
@@ -214,3 +216,104 @@ class Dialog_Wait(Gtk.Dialog):
     def on_timeout(self, user_data):
         self.progress_bar.pulse()
         return True
+
+
+
+
+class Dialog_Input(Gtk.Dialog):
+    def __init__(
+        self, parent, title='titulo', label='label', entry='', mode=None,
+        size=[256, 96], space_xy=[8, 4], size_file_chooser=[800, 400]
+    ):
+        super().__init__(title=title, transient_for=parent, flags=0)
+        '''
+        Un dialogo que te pide un entry. Si respondes OK o CANCEL, puedes obtener el texto con 
+        self.get_input()
+        Esta función devuelve un str si es satisfacotorio el entry, y devuelve un None si no lo es.
+        
+        Modos:
+        Si esta en mode='set_dir' o 'set_arch
+        Se agregara un boton para cambiar el entry por un directorio o archivo respectivamente, seleccionado con otro dialogo.
+        
+        En sel.get_input devuelve un str del dir/file, si existe el archivo. De lo contrario devuelve un None.
+        '''
+
+        self.set_default_size( size[0], size[1] )
+        self.mode = mode
+        self.size_file_chooser = size_file_chooser
+        self.parent = parent
+        
+        # Contenedor principal
+        vbox_main = Gtk.VBox( spacing=space_xy[1] )
+        vbox_main.set_property( 'expand', True )
+        
+        # Sección vertical | Entry Label | Etiqueta con el mensaje
+        hbox = Gtk.HBox( spacing=space_xy[0] )
+        vbox_main.pack_start( hbox, True, False, 0 )
+        
+        label = Gtk.Label( label=label )
+        hbox.pack_start( label, False, False, 0 )
+        
+        self.entry = Gtk.Entry( text=entry )
+        hbox.pack_start( self.entry, True, True, 0 )
+        
+        if self.mode == 'set_dir' or self.mode == 'set_arch':
+            button = Gtk.Button( label=Language_get_text(self.mode) )
+            button.connect( 'clicked', self.set_dir_file )
+            hbox.pack_start( button, False, False, 0 )
+        
+        # Sección vertical | Botones de aceptar y cancelar.
+        self.add_buttons( 
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_OK, Gtk.ResponseType.OK
+        )
+        
+        # Fin, agregar contenedor principal VBox
+        self.get_content_area().add(vbox_main)
+        self.show_all()
+    
+    def get_input(self):
+        # Devolver el texto del entry o no
+        return_text = False
+        if self.mode == 'set_dir':
+            if isdir(self.entry.get_text()):
+                return_text = True
+
+        elif self.mode == 'set_arch':
+            if isfile(self.entry.get_text()):
+                return_text = True
+
+        else:
+            return_text = True
+        
+        if return_text == True:
+            return self.entry.get_text()
+        else:
+            return None
+    
+    
+    def set_dir_file(self, button):
+        # Seleccionar archivo o carpeta
+        if self.mode == 'set_dir':
+            action = Gtk.FileChooserAction.SELECT_FOLDER
+        elif self.mode == 'set_arch':
+            action = Gtk.FileChooserAction.OPEN
+        
+        if self.mode == 'set_dir' or self.mode == 'set_arch':
+            dialog = Gtk.FileChooserDialog(
+                title=button.get_label(),
+                parent=self.parent,
+                action=action,
+            )
+            dialog.add_buttons(
+                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK,
+                Gtk.ResponseType.OK
+            )
+            dialog.set_default_size(self.size_file_chooser[0], self.size_file_chooser[1])
+            dialog.set_current_folder( self.entry.get_text() )
+            
+            response = dialog.run()
+            if response == Gtk.ResponseType.OK:
+                self.entry.set_text( dialog.get_filename() )
+                
+            dialog.destroy()
