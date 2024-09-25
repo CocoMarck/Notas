@@ -54,7 +54,7 @@ class Window_Main( Gtk.Window ):
         # Input para Nueva nota
         if option == 'new_note':
             dialog = Dialog_Input( 
-                self, title=get_text(option), label=get_text(option),
+                self, title=get_text(option), label=get_text('name'),
                 size=nums_win_input, space_xy=nums_space_xy
             )
             response = dialog.run()
@@ -240,12 +240,12 @@ for widget in get_list_text_widget('Gtk'):
     if widget == 'textview':
         css_style += text_widget_style( 
             widget=widget, font=file_font, font_size=num_font, 
-            margin=None, padding=None, idented=4
+            idented=4
         )
     else:
         css_style += text_widget_style( 
             widget=widget, font=file_font, font_size=num_font, 
-            margin=None, padding=num_space_padding, idented=4
+            padding=num_space_padding, idented=4
         )
 screen = Gdk.Screen.get_default()
 provider = Gtk.CssProvider()

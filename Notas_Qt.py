@@ -31,10 +31,16 @@ from PyQt6.QtCore import Qt
 # Estilo de ventana.
 qss_style = ''
 for widget in get_list_text_widget('Qt'):
-    qss_style += text_widget_style( 
-        widget=widget, font=file_font, font_size=num_font, 
-        margin=num_font, padding=num_space_padding, idented=4
-    )
+    if widget == 'QTextEdit':
+        qss_style += text_widget_style( 
+            widget=widget, font=file_font, font_size=num_font, 
+            margin_based_font=True, padding=None, idented=4
+        )
+    else:
+        qss_style += text_widget_style( 
+            widget=widget, font=file_font, font_size=num_font, 
+            margin_based_font=True, padding=num_space_padding, idented=4
+        )
 print(qss_style)
 
 
