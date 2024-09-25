@@ -1,11 +1,11 @@
 '''
-Este modulo, es para funciones relacionadas con la los valors xy de la resolucion de pantalla.
+Este modulo, es para funciones relacionadas con la los valores xy de la resolucion de pantalla.
 '''
 from logic.Modulo_System import *
 
-display = get_display_resolution()
+display=get_display_resolution()
 
-def get_display_number(multipler=0, divisor=0, based='width'):
+def get_display_number(multipler=0, divisor=0, based='width', display=display) -> int:
     '''Obtener un numero basado en la resolución de pantalla'''
     if based == 'width':
         base = display[0]
