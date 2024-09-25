@@ -147,3 +147,4 @@ remove_not_good=No se pudo remover el archivo
 
 # Files
 this_file_exists=Ese archivo ya existe.
+search=Buscar
