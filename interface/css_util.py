@@ -1,12 +1,16 @@
-# Listar los widgets
+'''
+Modulo con funciones relacionadas con los estilos CSS.
+'''
 def get_list_text_widget( option='Qt' ) -> list:
+    '''Listar los widgets de un determinado framework'''
     if option == 'Qt':
         list_text_widget = [
             'Label',
             'ComboBox',
             'LineEdit',
             'PushButton',
-            'TextEdit'
+            'TextEdit',
+            'CheckBox'
         ]
         number = 0
     elif option == 'Gtk':
@@ -16,6 +20,7 @@ def get_list_text_widget( option='Qt' ) -> list:
             'combobox',
             'entry',
             'textview',
+            'checkbutton'
         ]
         
 
@@ -30,9 +35,12 @@ def get_list_text_widget( option='Qt' ) -> list:
 
 
 
-# Estilo de programa
-def text_widget_style( widget=None, font=None, font_size=None, margin=None, padding=None, idented=0 ):
-    '''Obtener estido para el widget'''
+
+def text_widget_style( 
+    widget=str, font=str, font_size=int, margin_based_font=bool, 
+    margin_xy=list, padding=int, idented=0
+    ) -> str:
+    '''Obtener estido para el widget. Tipo CSS'''
     text = ''
 
     # Establecer si se pondran corchetes o no {}
@@ -51,14 +59,35 @@ def text_widget_style( widget=None, font=None, font_size=None, margin=None, padd
 
 
     # Agregar o no parametros
-    if type(font) == str:
+    # Fuente de texto y su tamaño
+    if isinstance(font, str):
         text += f'{space}font-family: {font};\n'
 
-    if type(font_size) == int:
+    if isinstance(font_size, int):
         text += f'{space}font-size: {font_size}px;\n'
 
-    if type(margin) == int:
-        margin_xy = [int(margin/2), int(margin/4)]
+    # Margen xy
+    set_margin = False
+    if type(margin_xy) == list:
+        if len(margin_xy) == 2:
+            if (
+                (type(margin_xy[0]) == int or float) and
+                (type(margin_xy[1]) == int or float)
+            ):
+                set_margin = True
+                margin_xy = [int(margin_xy[0]), int(margin_xy[1])]
+
+    elif type(margin_based_font) == bool:
+        if type(font_size) == int:
+            set_margin = True
+            margin_xy = [int(font_size/2), int(font_size/4)]
+
+    if set_margin == True:
+        if margin_xy[0] <= 0:
+            margin_xy[0] = 1
+        if margin_xy[1] <= 0:
+            margin_xy[1] = 1
+            
         text += (
             f'{space}margin-left: {margin_xy[0]}px;\n'
             f'{space}margin-right: {margin_xy[0]}px;\n'
@@ -66,7 +95,8 @@ def text_widget_style( widget=None, font=None, font_size=None, margin=None, padd
             f'{space}margin-bottom: {margin_xy[1]}px;\n'
         )
 
-    if type(padding) == int:
+    # Size adicional para el widget
+    if isinstance(padding, int):
         text += f'{space}padding: {padding}px;\n' # Size adicional para el widget
 
 
