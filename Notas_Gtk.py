@@ -176,7 +176,8 @@ class Dialog_edit_remove_note(Gtk.Dialog):
                 self.parent,
                 text=data_Nota.note,
                 edit=True,
-                size=nums_win_text_edit
+                size=nums_win_text_edit,
+                space_xy=nums_space_xy
             )
             dialog.run()
             dialog.destroy()
@@ -192,7 +193,8 @@ class Dialog_edit_remove_note(Gtk.Dialog):
                 self.parent,
                 text=data_Nota.note,
                 edit=True,
-                size=nums_win_text_edit
+                size=nums_win_text_edit,
+                space_xy=nums_space_xy
             )
             dialog.run()
             dialog.destroy()

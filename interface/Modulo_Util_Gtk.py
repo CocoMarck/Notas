@@ -17,13 +17,16 @@ from gi.repository import Gtk, GLib
 lang = Language()
 
 
+
+space_xy = [8,4]
 class Dialog_TextView(Gtk.Dialog):
     def __init__(
         self, parent,
         text = f'{lang["text"]}...',
         edit=False,
         size=[512, 256],
-        line_wrap=True
+        line_wrap=True,
+        space_xy=space_xy
     ):
         super().__init__(
             title=lang['text'], transient_for=parent, flags=0
@@ -52,7 +55,7 @@ class Dialog_TextView(Gtk.Dialog):
             self.text_isfile = False
 
         # Contenedor principal
-        box_v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        box_v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=space_xy[1])
 
         # Seccion Vertical - Text View
         text_scroll = Gtk.ScrolledWindow()
@@ -110,7 +113,8 @@ class Dialog_Command_Run(Gtk.Dialog):
         txt=lang['exec'],
         cfg_file='',
         size=[512, 256],
-        line_wrap=True
+        line_wrap=True,
+        space_xy=space_xy
     ):
         super().__init__(
             title=f"{lang['cmd']} - {lang['exec']}",
@@ -125,7 +129,7 @@ class Dialog_Command_Run(Gtk.Dialog):
         title_HeaderBar.props.title = lang['cmd']
         self.set_titlebar(title_HeaderBar)
         
-        box_v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        box_v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=space_xy[1])
         #box_v.set_homogeneous(False)
         #box_v.set_property("expand", True)
         #box_v.set_property("halign", Gtk.Align.CENTER)
@@ -186,12 +190,13 @@ class Dialog_Wait(Gtk.Dialog):
         super().__init__(
             title=lang['help_wait'],
             transient_for=parent, flags=0,
-            size=[256, 128]
+            size=[256, 128],
+            space_xy=space_xy
         )
         self.set_default_size( size[0], size[1] )
         
         # Contenedor Principal - VBox
-        vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=space_xy[1])
         vbox_main.set_property("expand", True)
         
         # Seccion Vertical - Label
@@ -223,7 +228,7 @@ class Dialog_Wait(Gtk.Dialog):
 class Dialog_Input(Gtk.Dialog):
     def __init__(
         self, parent, title='titulo', label='label', entry='', mode=None,
-        size=[256, 96], space_xy=[8, 4], size_file_chooser=[800, 400]
+        size=[256, 96], space_xy=space_xy, size_file_chooser=[800, 400]
     ):
         super().__init__(title=title, transient_for=parent, flags=0)
         '''
