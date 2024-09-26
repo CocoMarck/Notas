@@ -29,8 +29,8 @@ nums_win_new = [
     get_display_number(multipler=0.12, based='height')
 ]
 nums_win_text_edit = [
-    get_display_number(multipler=0.25, based='width'),
-    get_display_number(multipler=0.25, based='height')
+    get_display_number(multipler=0.4, based='width'),
+    get_display_number(multipler=0.4, based='height')
 ]
 nums_win_input = [
     get_display_number(multipler=0.4, based='width'),
