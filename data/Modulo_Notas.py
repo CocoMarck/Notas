@@ -18,6 +18,8 @@ from entities import Nota
 import os, sys
 from pathlib import Path as pathlib
 
+encoding = 'utf-8'
+
 # Obtén la ruta al directorio actual del script
 current_dir = os.path.dirname( os.path.abspath(sys.argv[0]) )
 
@@ -123,7 +125,7 @@ def save_Nota( Nota, save=None, remove=None ) -> bool:
         if pathlib(Nota.path).exists():
             # Detectar que el texto exista y crear Archivo de texto
             if not pathlib( note_to_save ).exists():
-                with open( note_to_save, 'w') as text_final:
+                with open( note_to_save, 'w', encoding=encoding) as text_final:
                     text_final.write(
                         f'{Title(text=save, print_mode=False)}'
                     )
@@ -159,7 +161,7 @@ def save_Nota( Nota, save=None, remove=None ) -> bool:
                 pass
             text_ready += line + '\n'
 
-        with open(file_note, 'w') as last_note:
+        with open(file_note, 'w', encoding=encoding) as last_note:
             last_note.write(text_ready[:-1])
 
     else:
@@ -173,7 +175,7 @@ def save_Nota( Nota, save=None, remove=None ) -> bool:
                 pass
             text_ready += line + '\n'
 
-        with open(file_note, 'w') as last_note:
+        with open(file_note, 'w', encoding=encoding) as last_note:
             last_note.write(text_ready[:-1])
     
 
@@ -195,7 +197,7 @@ def save_Nota( Nota, save=None, remove=None ) -> bool:
                 line = f'path={Nota.path}'
             text_ready += line + '\n'
 
-        with open(file_note, 'w') as path_note:
+        with open(file_note, 'w', encoding=encoding) as path_note:
             path_note.write(text_ready[:-1])
     
 
