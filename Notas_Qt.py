@@ -68,11 +68,11 @@ class Window_Main(QWidget):
             if ok and note:
                 # Agregar nota
                 save_Nota( data_Nota, save=note )
-            
-            option = 'edit_note'
+                Dialog_TextEdit( self, text=data_Nota.note, edit=True, size=nums_win_text_edit ).exec()
 
-        # Editar o remover nota
-        Dialog_edit_remove_note( self, option=option ).exec()
+        else:
+            # Editar o remover nota
+            Dialog_edit_remove_note( self, option=option ).exec()
 
         self.show()
     

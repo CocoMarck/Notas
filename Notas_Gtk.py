@@ -63,12 +63,20 @@ class Window_Main( Gtk.Window ):
                 text = dialog.get_input()
                 if pass_text_filter(text.lower(), filter=' abcdefghijklmnñopqrstuvwxyz_-'):
                     save_Nota( data_Nota, save=text )
+                    dialog_text_edit = Dialog_TextView(
+                        self,
+                        text=data_Nota.note,
+                        edit=True,
+                        size=nums_win_text_edit,
+                        space_xy=nums_space_xy
+                    )
+                    dialog_text_edit.run()
+                    dialog_text_edit.destroy()
                 else:
                     print('No paso el filtro')
 
-            dialog.destroy()
-            
-            option = 'edit_note'
+            dialog.destroy()            
+            #option = 'edit_note'
 
         # Abrir menu de notas
         if option == 'edit_note' or option == 'remove_note':
