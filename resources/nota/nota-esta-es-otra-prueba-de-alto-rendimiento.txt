@@ -1,2 +1,0 @@
-#    Esta es otra prueba de alto rendimiento    #
-Este es un texto cambiante

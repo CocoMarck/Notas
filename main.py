@@ -5,8 +5,11 @@ from controllers.nota_controller import NotaController
 nota_model = NotaModel()
 nota_controller = NotaController( nota_model )
 
-print(nota_model.text)
+nota_model.last_nota = "papa y quesooo"
+nota_model.text = "papitas fritas"
+nota_controller.save()
 
+print(nota_model.text)
 print( nota_controller.list_nota() )
 
 
