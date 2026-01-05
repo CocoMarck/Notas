@@ -5,11 +5,9 @@ from controllers.nota_controller import NotaController
 nota_model = NotaModel()
 nota_controller = NotaController( nota_model )
 
-nota_model.last_nota = "Esta es otra prueba de alto rendimiento"
-nota_model.text = "Este es un texto cambiante"
-nota_controller.save()
-
 print(nota_model.text)
+
+print( nota_controller.list_nota() )
 
 
 # GUI

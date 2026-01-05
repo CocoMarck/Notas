@@ -18,8 +18,8 @@ class NotaController:
         self.get_config()
         self.read()
 
-    def get_name_only( self, name ):
-        return name.replace( FILE_PREFIX, "" ).replace(FILE_TYPE_PREFIX)
+    def get_name_only(self, name ):
+        return name.replace( FILE_PREFIX, "" ).replace(FILE_TYPE_PREFIX, "")
 
     def get_name_prefix(self, name ):
         return f"{FILE_PREFIX}{name}{FILE_TYPE_PREFIX}"
@@ -36,13 +36,14 @@ class NotaController:
         self.nota.last_nota = pathlib.Path( self.config_value['last_nota'] ).name
         self.nota.path = pathlib.Path( self.config_value['path'] )
 
-    def list_notas(self):
+    def list_nota(self):
         '''
-        Listar cantidad de notas disponibles
+        Listar cantidad de notas disponibles. Usar un glob, para que nomas muestre los archivos de texto con el prefijo indicado.
         '''
         notas = []
         for path in resource_loader.get_recursive_tree( self.nota.path )['file']:
-            notas.append( self.get_name_only( name ) )
+            if path.name.startswith(FILE_PREFIX):
+                notas.append( self.get_name_only(path.name ) )
         return notas
 
     def get_nota_path(self):
