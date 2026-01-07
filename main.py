@@ -5,20 +5,22 @@ from controllers.nota_controller import NotaController
 nota_model = NotaModel()
 nota_controller = NotaController( nota_model )
 
-nota_model.last_nota = "papa y quesooo"
-nota_model.text = "papitas fritas"
-nota_controller.save()
+#nota_model.last_nota = "Necesito uno de esos"
+#nota_model.text = "Yo necesito unos tecates y aguacate."
+#nota_controller.save()
 
-print(nota_model.text)
+print( nota_model.last_nota )
+print( nota_model.text )
 print( nota_controller.list_nota() )
 
 
 # GUI
-from config.paths import ICON_FILE
+from config.paths import ICON_FILE, MYAPP_UI_FILE
 import sys, os
 from functools import partial
 from PyQt6.QtWidgets import(
     QApplication,
+    QMainWindow,
     QWidget,
     QDialog,
     QFileDialog,
@@ -30,8 +32,10 @@ from PyQt6.QtWidgets import(
     QVBoxLayout,
     QHBoxLayout,
     QInputDialog
+
 )
-from PyQt6.QtGui import QIcon
+from PyQt6 import uic
+from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt
 
 
@@ -42,15 +46,18 @@ def get_text(text):
 
 
 
-class WindowMain(QWidget):
+class MyApp(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         self.setWindowTitle( get_text('CM Notas') )
         self.setWindowIcon( QIcon( str(ICON_FILE) ) )
         self.resize( 256, 256 )
+        uic.loadUi( MYAPP_UI_FILE, self )
         
         # Contenedor principal
+        self.textedit.setText( nota_model.text )
+        '''
         vbox_main = QVBoxLayout()
         self.setLayout(vbox_main)
         
@@ -63,13 +70,14 @@ class WindowMain(QWidget):
         # Seccion vertical boton cambiar directorio de nota
         button = QPushButton( get_text('change_main_dir') )
         vbox_main.addWidget( button)
-        
-        # Fin mostrar todo
-        self.show()
+        '''
 
 
 # Bucle del programa
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = WindowMain()
+
+    window = MyApp()
+    window.show()
+
     sys.exit(app.exec())

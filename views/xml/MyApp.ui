@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MyApp</class>
+
+  <widget class="QMainWindow" name="MyApp">
+    <!-- Menu -->
+    <widget class="QMenuBar" name="menuBar">
+
+     <widget class="QMenu" name="fileMenu">
+      <property name="title">
+       <string>file</string>
+      </property>
+      <addaction name="actionSave"/>
+      <addaction name="actionOpen"/>
+     </widget>
+     <addaction name="fileMenu"/>
+    </widget>
+
+    <!-- Menu actions -->
+    <action name="actionSave">
+     <property name="text">
+      <string>save</string>
+     </property>
+    </action>
+
+    <action name="actionOpen">
+     <property name="text">
+      <string>open</string>
+     </property>
+    </action>
+
+    <!-- Contenido contundente -->
+    <widget class="QWidget" name="centralWidget">
+      <layout class="QVBoxLayout" name="mainLayout">
+        <!-- TextView -->
+        <item>
+          <widget class="QTextEdit" name="textedit"></widget>
+          <property name="wordWrap">
+            <bool>true</bool>
+          </property>
+        </item>
+
+      </layout>
+    </widget>
+
+  </widget>
+
+  <resources/>
+  <connections/>
+</ui>

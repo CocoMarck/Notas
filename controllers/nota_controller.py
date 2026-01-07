@@ -6,23 +6,22 @@ from views.gui.show_print import title
 
 
 ENCODING = "utf-8"
-FILE_PREFIX = "nota-"
+FILE_NAME_PREFIX = "nota-"
 FILE_TYPE_PREFIX = ".txt"
-INCLUDE_CHAR_PREFIX = PREFIX_ABC + "-"
+INCLUDE_CHAR_PREFIX = PREFIX_ABC + ".-"
 
 
 class NotaController:
     def __init__(self, nota_model):
         self.nota = nota_model
         self.nota.text = ""
-        self.get_config()
-        self.read()
+        self.load()
 
     def get_name_only(self, name ):
-        return name.replace( FILE_PREFIX, "" ).replace(FILE_TYPE_PREFIX, "")
+        return name.replace( FILE_NAME_PREFIX, "" ).replace(FILE_TYPE_PREFIX, "")
 
     def get_name_prefix(self, name ):
-        return f"{FILE_PREFIX}{name}{FILE_TYPE_PREFIX}"
+        return f"{FILE_NAME_PREFIX}{name}{FILE_TYPE_PREFIX}"
 
     def get_config(self):
         '''
@@ -39,16 +38,24 @@ class NotaController:
     def list_nota(self):
         '''
         Listar cantidad de notas disponibles. Usar un glob, para que nomas muestre los archivos de texto con el prefijo indicado.
+
+        Solo las notas puestas en la ruta, no busqueda recursiva.
         '''
         notas = []
-        for path in resource_loader.get_recursive_tree( self.nota.path )['file']:
-            if path.name.startswith(FILE_PREFIX):
-                notas.append( self.get_name_only(path.name ) )
+        #for path in resource_loader.get_recursive_tree( self.nota.path )['file']:
+            #if path.name.startswith(FILE_NAME_PREFIX):
+        for path in sorted( self.nota.path.glob(f'{FILE_NAME_PREFIX}*') ):
+            notas.append( self.get_name_only(path.name) )
         return notas
+
+    def good_title( self, text ):
+        return ignore_text_filter(
+            text.lower().replace(' ', '-'), INCLUDE_CHAR_PREFIX
+        )
 
     def get_nota_path(self):
         file_name = self.get_name_prefix( self.nota.last_nota )
-        return self.nota.path.joinpath( file_name )
+        return self.nota.path.joinpath( self.good_title(file_name) )
 
     def exists(self):
         return self.get_nota_path().exists()
@@ -68,6 +75,11 @@ class NotaController:
             return False
 
 
+    def load(self):
+        self.get_config()
+        self.read()
+
+
     def set_config(self):
         '''
         Establecer configuracion
@@ -79,7 +91,7 @@ class NotaController:
             text_ready = ''
             for line in self.config_comment_text.split('\n'):
                 if line.startswith('last_nota=') and change_last_nota:
-                    line = f'last_nota={self.nota.last_nota}'
+                    line = f'last_nota={ self.good_title(self.nota.last_nota) }'
                 elif line.startswith('path=') and change_path:
                     line = f'path={self.nota.path}'
                 text_ready += line + '\n'
@@ -90,15 +102,8 @@ class NotaController:
         else:
             return False
 
-
-    def good_title( self, text ):
-        return ignore_text_filter(
-            text.lower().replace(' ', '-'), INCLUDE_CHAR_PREFIX
-        )
-
     def insert(self):
         text_title = self.nota.last_nota
-        self.nota.last_nota = self.good_title( self.nota.last_nota )
         path = self.get_nota_path()
         with open( path, 'w', encoding=ENCODING) as empty_text:
             empty_text.write(
@@ -121,3 +126,12 @@ class NotaController:
             self.insert()
         self.set_config()
         self.read()
+
+
+    def remove(self):
+        if self.exists():
+            nota = self.get_nota_path()
+            nota.unlink()
+            return True
+        else:
+            return False
