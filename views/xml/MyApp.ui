@@ -10,24 +10,26 @@
       <property name="title">
        <string>file</string>
       </property>
-      <addaction name="actionSave"/>
       <addaction name="actionOpen"/>
+      <addaction name="actionSave"/>
      </widget>
      <addaction name="fileMenu"/>
     </widget>
 
     <!-- Menu actions -->
+    <action name="actionOpen">
+      <property name="text">
+        <string>open</string>
+      </property>
+    </action>
+
     <action name="actionSave">
      <property name="text">
       <string>save</string>
      </property>
     </action>
 
-    <action name="actionOpen">
-     <property name="text">
-      <string>open</string>
-     </property>
-    </action>
+
 
     <!-- Contenido contundente -->
     <widget class="QWidget" name="centralWidget">
