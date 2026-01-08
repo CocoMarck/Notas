@@ -100,11 +100,11 @@ class MyApp(QMainWindow):
 
     def on_remove(self):
         set_item_dialog = SetItemDialog( self, items=nota_controller.list_nota(), checkable=False )
-        set_item_dialog.exec()
-        item = set_item_dialog.get_item()
-        if isinstance(item, str):
-            nota_controller.remove( item )
-            self.set_textedit()
+        if set_item_dialog.exec() == QDialog.DialogCode.Accepted:
+            item = set_item_dialog.get_item()
+            if isinstance(item, str):
+                nota_controller.remove( item )
+                self.set_textedit()
 
 
 

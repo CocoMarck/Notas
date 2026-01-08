@@ -73,7 +73,7 @@ class SetItemDialog( QDialog ):
             hbox.addStretch()
             button = QPushButton( self.text_dict[option] )
             if option == 'ok':
-                button.clicked.connect( self.get_item )
+                button.clicked.connect( self.accept )
             elif option == 'cancel':
                 button.clicked.connect( self.close )
             hbox.addWidget( button )
@@ -89,7 +89,7 @@ class SetItemDialog( QDialog ):
                     self.selected_items.append( self.button_dict[button] )
         else:
             self.selected_items = self.button_dict[button]
-            self.close()
+            self.accept()
 
 
     def on_search(self, text):
@@ -109,3 +109,4 @@ class SetItemDialog( QDialog ):
             return None
         else:
             return self.selected_items
+

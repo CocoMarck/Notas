@@ -62,12 +62,12 @@ class NotaController:
     def remove(self, name):
         success = self.nota_repository.remove( name, self.nota_model.path )
         if success:
+            self.nota_model.text = ""
             if (
                 self.nota_repository.get_name_only( self.nota_model.last_nota ) ==
                 self.nota_repository.get_name_only( name )
             ):
                 self.nota_model.last_nota = ""
-                self.nota_model.text = ""
                 self.set_config()
             self.load()
         return success
