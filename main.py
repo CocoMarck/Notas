@@ -2,9 +2,11 @@
 from views.dialogs.qt import SetItemDialog
 from models.nota_model import NotaModel
 from controllers.nota_controller import NotaController
+from core.nota_repository import NotaRepository
 
 nota_model = NotaModel()
-nota_controller = NotaController( nota_model )
+nota_repository = NotaRepository()
+nota_controller = NotaController( nota_model, nota_repository )
 
 #nota_model.last_nota = "Necesito uno de esos"
 #nota_model.text = "Yo necesito unos tecates y aguacate."
@@ -60,9 +62,11 @@ class MyApp(QMainWindow):
         self.set_textedit()
 
         # Actions
+        self.actionLastNota.triggered.connect( self.on_last_nota )
         self.actionNew.triggered.connect(self.on_new)
         self.actionOpen.triggered.connect(self.on_open)
         self.actionSave.triggered.connect(self.on_save)
+        self.actionRemove.triggered.connect(self.on_remove)
 
     def set_textedit(self):
         self.textedit.setText( nota_model.text )
@@ -88,6 +92,18 @@ class MyApp(QMainWindow):
             nota_model.text = ""
             nota_controller.save()
             nota_controller.read()
+            self.set_textedit()
+
+    def on_last_nota(self):
+        nota_controller.load()
+        self.set_textedit()
+
+    def on_remove(self):
+        set_item_dialog = SetItemDialog( self, items=nota_controller.list_nota(), checkable=False )
+        set_item_dialog.exec()
+        item = set_item_dialog.get_item()
+        if isinstance(item, str):
+            nota_controller.remove( item )
             self.set_textedit()
 
 

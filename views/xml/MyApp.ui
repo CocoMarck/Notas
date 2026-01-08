@@ -10,14 +10,22 @@
       <property name="title">
        <string>file</string>
       </property>
+      <addaction name="actionLastNota"/>
       <addaction name="actionNew"/>
       <addaction name="actionOpen"/>
       <addaction name="actionSave"/>
+      <addaction name="actionRemove"/>
      </widget>
      <addaction name="fileMenu"/>
     </widget>
 
     <!-- Menu actions -->
+    <action name="actionLastNota">
+      <property name="text">
+        <string>last-nota</string>
+      </property>
+    </action>
+
     <action name="actionNew">
       <property name="text">
         <string>new</string>
@@ -36,7 +44,11 @@
      </property>
     </action>
 
-
+    <action name="actionRemove">
+      <property name="text">
+        <string>remove</string>
+      </property>
+    </action>
 
     <!-- Contenido contundente -->
     <widget class="QWidget" name="centralWidget">
