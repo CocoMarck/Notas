@@ -1,14 +1,19 @@
 from config.paths import resource_loader, NOTA_CONFIG_FILE, NOTA_DEFAULT_DIR
-from core.text_util import read_text, ignore_comment, separe_text, ignore_text_filter, PREFIX_ABC
+from core.text_util import (
+    read_text, ignore_comment, separe_text, ignore_text_filter, PREFIX_ABC,
+    only_one_char
+)
 import pathlib
 
 from views.gui.show_print import title
 
 
 ENCODING = "utf-8"
-FILE_NAME_PREFIX = "nota-"
+NAME = 'nota'
+SPACE_CHAR = '-'
+FILE_NAME_PREFIX = f"{NAME}-"
 FILE_TYPE_PREFIX = ".txt"
-INCLUDE_CHAR_PREFIX = PREFIX_ABC + ".-"
+INCLUDE_CHAR_PREFIX = PREFIX_ABC + f".{SPACE_CHAR}"
 
 
 class NotaController:
@@ -17,11 +22,21 @@ class NotaController:
         self.nota.text = ""
         self.load()
 
-    def get_name_only(self, name ):
-        return name.replace( FILE_NAME_PREFIX, "" ).replace(FILE_TYPE_PREFIX, "")
+    def filter_text( self, text ):
+        filtered_text = ignore_text_filter(
+            text.lower().replace(' ', SPACE_CHAR), INCLUDE_CHAR_PREFIX
+        )
+        if filtered_text:
+            return only_one_char( char=SPACE_CHAR, text=filtered_text )
+        return filtered_text
 
-    def get_name_prefix(self, name ):
-        return f"{FILE_NAME_PREFIX}{name}{FILE_TYPE_PREFIX}"
+    def get_name_only( self, name ):
+        return self.filter_text(
+         text=name.replace( FILE_NAME_PREFIX, "" ).replace(FILE_TYPE_PREFIX, "").replace( NAME, "" )
+        )
+
+    def get_name_prefix( self, name ):
+        return f"{FILE_NAME_PREFIX}{self.get_name_only(name=name)}{FILE_TYPE_PREFIX}"
 
     def get_config(self):
         '''
@@ -48,14 +63,9 @@ class NotaController:
             notas.append( self.get_name_only(path.name) )
         return notas
 
-    def good_title( self, text ):
-        return ignore_text_filter(
-            text.lower().replace(' ', '-'), INCLUDE_CHAR_PREFIX
-        )
-
     def get_nota_path(self):
         file_name = self.get_name_prefix( self.nota.last_nota )
-        return self.nota.path.joinpath( self.good_title(file_name) )
+        return self.nota.path.joinpath( self.filter_text(file_name) )
 
     def exists(self):
         return self.get_nota_path().exists()
@@ -91,7 +101,7 @@ class NotaController:
             text_ready = ''
             for line in self.config_comment_text.split('\n'):
                 if line.startswith('last_nota=') and change_last_nota:
-                    line = f'last_nota={ self.good_title(self.nota.last_nota) }'
+                    line = f'last_nota={ self.filter_text(self.nota.last_nota) }'
                 elif line.startswith('path=') and change_path:
                     line = f'path={self.nota.path}'
                 text_ready += line + '\n'
@@ -112,7 +122,7 @@ class NotaController:
 
 
     def update(self):
-        self.nota.last_nota = self.good_title( self.nota.last_nota )
+        self.nota.last_nota = self.filter_text( self.nota.last_nota )
         path = self.get_nota_path()
         with open( path, 'w', encoding=ENCODING) as empty_text:
             empty_text.write( self.nota.text )

@@ -10,6 +10,7 @@
       <property name="title">
        <string>file</string>
       </property>
+      <addaction name="actionNew"/>
       <addaction name="actionOpen"/>
       <addaction name="actionSave"/>
      </widget>
@@ -17,6 +18,12 @@
     </widget>
 
     <!-- Menu actions -->
+    <action name="actionNew">
+      <property name="text">
+        <string>new</string>
+      </property>
+    </action>
+
     <action name="actionOpen">
       <property name="text">
         <string>open</string>
