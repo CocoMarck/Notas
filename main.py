@@ -1,5 +1,5 @@
 # Nota functions
-from views.dialogs.qt import SetItemDialog
+from views.dialogs.qt import ( SetItemDialog, SetPathDialog )
 from models.nota_model import NotaModel
 from controllers.nota_controller import NotaController
 from core.nota_repository import NotaRepository
@@ -67,6 +67,7 @@ class MyApp(QMainWindow):
         self.actionOpen.triggered.connect(self.on_open)
         self.actionSave.triggered.connect(self.on_save)
         self.actionRemove.triggered.connect(self.on_remove)
+        self.actionChangePath.triggered.connect(self.on_change_path)
 
     def set_textedit(self):
         self.textedit.setText( nota_model.text )
@@ -105,6 +106,15 @@ class MyApp(QMainWindow):
             if isinstance(item, str):
                 nota_controller.remove( item )
                 self.set_textedit()
+
+    def on_change_path(self):
+        set_path_dialog = SetPathDialog( self, mode="dir", path=nota_model.path )
+        if set_path_dialog.exec() == QDialog.DialogCode.Accepted:
+            nota_model.last_nota = ""
+            nota_model.path = set_path_dialog.get_path()
+            nota_controller.set_config()
+            nota_controller.load()
+            self.set_textedit()
 
 
 

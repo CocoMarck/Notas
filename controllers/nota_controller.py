@@ -31,6 +31,7 @@ class NotaController:
             self.nota_model.text = text
             return True
         else:
+            self.nota_model.text = ""
             return False
 
 

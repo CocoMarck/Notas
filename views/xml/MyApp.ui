@@ -15,6 +15,7 @@
       <addaction name="actionOpen"/>
       <addaction name="actionSave"/>
       <addaction name="actionRemove"/>
+      <addaction name="actionChangePath"/>
      </widget>
      <addaction name="fileMenu"/>
     </widget>
@@ -47,6 +48,12 @@
     <action name="actionRemove">
       <property name="text">
         <string>remove</string>
+      </property>
+    </action>
+
+    <action name="actionChangePath">
+      <property name="text">
+        <string>change-path</string>
       </property>
     </action>
 

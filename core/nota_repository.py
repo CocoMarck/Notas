@@ -97,8 +97,11 @@ class NotaRepository:
         if change_last_nota or change_path:
             text_ready = ''
             for line in self.config_comment_text.split('\n'):
-                if line.startswith('last_nota=') and change_last_nota:
-                    line = f'last_nota={ self.filter_text(last_nota) }'
+                if line.startswith('last_nota='):
+                    if change_last_nota:
+                        line = f'last_nota={ self.filter_text(last_nota) }'
+                    elif change_path:
+                        line = f'last_nota='
                 elif line.startswith('path=') and change_path:
                     line = f'path={path}'
                 text_ready += line + '\n'
