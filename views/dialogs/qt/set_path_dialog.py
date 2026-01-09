@@ -105,10 +105,10 @@ class SetPathDialog(QDialog):
 
     def on_ok(self):
         '''
-        Solo si existe el path, y cunple con el mode, aceptar, de lo contrario, solo cerrar.
+        Solo si existe el path, y cumple con el mode, aceptar, de lo contrario, solo cerrar.
         '''
         path = self.get_path()
-        if path != None:
+        if path is not None:
             self.accept()
         else:
             self.close()
