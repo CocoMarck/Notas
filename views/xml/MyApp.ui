@@ -10,7 +10,6 @@
       <property name="title">
        <string>file</string>
       </property>
-      <addaction name="actionLastNota"/>
       <addaction name="actionNew"/>
       <addaction name="actionOpen"/>
       <addaction name="actionSave"/>
@@ -21,12 +20,6 @@
     </widget>
 
     <!-- Menu actions -->
-    <action name="actionLastNota">
-      <property name="text">
-        <string>last-nota</string>
-      </property>
-    </action>
-
     <action name="actionNew">
       <property name="text">
         <string>new</string>

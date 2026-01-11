@@ -1,5 +1,6 @@
 # Nota functions
 from views.dialogs.qt import ( SetItemDialog, SetPathDialog )
+from views.interface_number import WINDOW_MAIN_SIZE, SET_ITEM_DIALOG_SIZE, SET_PATH_DIALOG_SIZE
 from models.nota_model import NotaModel
 from controllers.nota_controller import NotaController
 from core.nota_repository import NotaRepository
@@ -55,14 +56,13 @@ class MyApp(QMainWindow):
         
         self.setWindowTitle( get_text('CM Notas') )
         self.setWindowIcon( QIcon( str(ICON_FILE) ) )
-        self.resize( 256, 256 )
+        self.resize( WINDOW_MAIN_SIZE[0], WINDOW_MAIN_SIZE[1] )
         uic.loadUi( MYAPP_UI_FILE, self )
         
         # TextEdit
         self.set_textedit()
 
         # Actions
-        self.actionLastNota.triggered.connect( self.on_last_nota )
         self.actionNew.triggered.connect(self.on_new)
         self.actionOpen.triggered.connect(self.on_open)
         self.actionSave.triggered.connect(self.on_save)
@@ -73,7 +73,9 @@ class MyApp(QMainWindow):
         self.textedit.setText( nota_model.text )
 
     def on_open(self, signal):
-        set_item_dialog = SetItemDialog( self, items=nota_controller.list_nota(), checkable=False )
+        set_item_dialog = SetItemDialog(
+            self, items=nota_controller.list_nota(), checkable=False, size=SET_ITEM_DIALOG_SIZE
+        )
         set_item_dialog.exec()
         item = set_item_dialog.get_item()
         if isinstance(item, str):
@@ -100,7 +102,9 @@ class MyApp(QMainWindow):
         self.set_textedit()
 
     def on_remove(self):
-        set_item_dialog = SetItemDialog( self, items=nota_controller.list_nota(), checkable=False )
+        set_item_dialog = SetItemDialog(
+            self, items=nota_controller.list_nota(), checkable=False, size=SET_ITEM_DIALOG_SIZE
+        )
         if set_item_dialog.exec() == QDialog.DialogCode.Accepted:
             item = set_item_dialog.get_item()
             if isinstance(item, str):
@@ -108,7 +112,9 @@ class MyApp(QMainWindow):
                 self.set_textedit()
 
     def on_change_path(self):
-        set_path_dialog = SetPathDialog( self, mode="dir", path=nota_model.path )
+        set_path_dialog = SetPathDialog(
+            self, mode="dir", path=nota_model.path, size=SET_PATH_DIALOG_SIZE
+        )
         if set_path_dialog.exec() == QDialog.DialogCode.Accepted:
             nota_model.last_nota = ""
             nota_model.path = set_path_dialog.get_path()
