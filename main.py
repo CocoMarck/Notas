@@ -1,6 +1,10 @@
 # Nota functions
 from views.dialogs.qt import ( SetItemDialog, SetPathDialog )
-from views.interface_number import WINDOW_MAIN_SIZE, SET_ITEM_DIALOG_SIZE, SET_PATH_DIALOG_SIZE
+from views.interface_number import (
+    WINDOW_MAIN_SIZE, SET_ITEM_DIALOG_SIZE, SET_PATH_DIALOG_SIZE,
+    FONT_SIZE, MARGIN_XY, PADDING_SPACE
+)
+from views.style_sheet.css_util import get_list_text_widget, text_widget_style
 from models.nota_model import NotaModel
 from controllers.nota_controller import NotaController
 from core.nota_repository import NotaRepository
@@ -13,9 +17,31 @@ nota_controller = NotaController( nota_model, nota_repository )
 #nota_model.text = "Yo necesito unos tecates y aguacate."
 #nota_controller.save()
 
-print( nota_model.last_nota )
-print( nota_model.text )
-print( nota_controller.list_nota() )
+
+
+
+# Estilo de programa
+FONT_FILE = "monospace"
+qss_style = ''
+for widget in get_list_text_widget('Qt'):
+    if widget == "QTextEdit":
+        qss_style += text_widget_style(
+            widget=widget, font=FONT_FILE, font_size=FONT_SIZE,
+            margin_based_font=True, padding=None, idented=4
+        )
+    elif widget == "QMenuBar":
+        qss_style += text_widget_style(
+            widget=widget, font=FONT_FILE, font_size=FONT_SIZE,
+            margin_based_font=None, padding=None, idented=4
+        )
+    else:
+        qss_style += text_widget_style(
+            widget=widget, font=FONT_FILE, font_size=FONT_SIZE,
+            margin_xy=MARGIN_XY, padding=PADDING_SPACE, idented=4
+        )
+print(qss_style)
+
+
 
 
 # GUI
@@ -128,6 +154,7 @@ class MyApp(QMainWindow):
 # Bucle del programa
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyleSheet( qss_style )
 
     window = MyApp()
     window.show()
