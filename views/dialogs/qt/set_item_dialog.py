@@ -93,15 +93,25 @@ class SetItemDialog( QDialog ):
 
 
     def on_search(self, text):
-        lower_text = text.lower()
-        if not lower_text:
+        query = text.lower().strip()
+        if not query:
             return
+
+        # 1) primero: empieza con
         for button in self.button_dict.keys():
-            if button.text().lower().startswith(lower_text):
+            if button.text().lower().startswith(query):
                 button.setFocus()
                 self.scroll_area.ensureWidgetVisible(button)
                 self.line_edit_search.setFocus()
-                break
+                return
+
+        # 2) fallback: contiene
+        for button in self.button_dict.keys():
+            if query in button.text().lower():
+                button.setFocus()
+                self.scroll_area.ensureWidgetVisible(button)
+                self.line_edit_search.setFocus()
+                return
 
 
     def get_item(self):
