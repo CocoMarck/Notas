@@ -7,7 +7,7 @@ from views.interface_number import (
 from views.style_sheet.css_util import get_list_text_widget, text_widget_style
 from models.nota_model import NotaModel
 from controllers.nota_controller import NotaController
-from core.nota_repository import NotaRepository
+from data.repository import NotaRepository
 
 nota_model = NotaModel()
 nota_repository = NotaRepository()
