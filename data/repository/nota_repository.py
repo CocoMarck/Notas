@@ -52,6 +52,8 @@ class NotaRepository:
 
     def get_last_nota(self):
         # Obtener ultima nota
+        if self.config_value['last_nota'].replace(' ', '') == '':
+            return None
         return self.config_value['last_nota']
 
     def get_path(self):

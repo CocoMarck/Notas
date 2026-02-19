@@ -24,6 +24,9 @@ class NotaController:
         '''
         Leer texto de ultima nota.
         '''
+        if self.nota_model.last_nota == None:
+            return False
+
         text = self.nota_repository.get_nota_text(
             self.nota_model.last_nota, self.nota_model.path
         )
@@ -51,6 +54,9 @@ class NotaController:
 
 
     def save(self):
+        if self.nota_model.last_nota == None:
+            return False
+
         signal = self.nota_repository.save(
             self.nota_model.last_nota, self.nota_model.path, self.nota_model.text
         )
