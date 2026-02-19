@@ -5,3 +5,4 @@ nota-*.txt
 dist/
 build/
 *.7z
+*.spec
